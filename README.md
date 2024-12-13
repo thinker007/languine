@@ -14,12 +14,10 @@ $ npx languine@latest
 
 ## What is Languine?
 
-Languine is an AI-driven CLI tool designed to simplify and automate the
-localization workflow for developers. It integrates seamlessly into your
-development process, enabling you to detect, translate, and manage translatable
-content across your codebase with ease. By leveraging modern AI language models,
-Languine ensures high-quality, consistent translations for your applications,
-making it a powerful addition to your internationalization toolkit.
+Languine helps developers to focus on building features, not wrestling with
+localization challenges. With its robust tooling and AI capabilities, it
+transforms what was once a tedious, manual process into an automated,
+developer-friendly experience.
 
 ## Why use Languine?
 
@@ -48,11 +46,6 @@ making it a powerful addition to your internationalization toolkit.
 - Leverages modern AI models to deliver contextually accurate translations
 - Supports more than 100 languages with natural and consistent results
 - Ensures that translations align with the tone and intent of your original text
-
-Languine empowers developers to focus on building features, not wrestling with
-localization challenges. With its robust tooling and AI capabilities, it
-transforms what was once a tedious, manual process into an automated,
-developer-friendly experience.
 
 ## Made with ❤️ from Midday
 
