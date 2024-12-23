@@ -1,3 +1,4 @@
+import { execSync } from "node:child_process";
 import fs from "node:fs/promises";
 import path from "node:path";
 import { createOpenAI } from "@ai-sdk/openai";
@@ -6,7 +7,7 @@ import { generateText } from "ai";
 import chalk from "chalk";
 import dedent from "dedent";
 import { prompt as defaultPrompt } from "../prompt.js";
-import { getApiKey, getConfig } from "../utils.js";
+import { extractChangedKeys, getApiKey, getConfig } from "../utils.js";
 
 export async function translate(targetLocale?: string) {
   intro("Starting translation process...");
@@ -32,7 +33,7 @@ export async function translate(targetLocale?: string) {
   });
 
   const s = spinner();
-  s.start("Translating to all target locales...");
+  s.start("Checking for changes and translating to target locales...");
 
   // Create translation tasks for all locales and file patterns
   const translationTasks = locales.flatMap((locale) =>
@@ -42,38 +43,66 @@ export async function translate(targetLocale?: string) {
         const targetPath = pattern.replace("[locale]", locale);
 
         try {
-          // Read source file
-          let sourceContent = "";
+          // Get git diff for source file
+          const diff = execSync(`git diff HEAD -- ${sourcePath}`, {
+            encoding: "utf-8",
+          });
+
+          if (!diff) {
+            return { locale, sourcePath, success: true, noChanges: true };
+          }
+
+          const { addedKeys } = extractChangedKeys(diff);
+
+          if (addedKeys.length === 0) {
+            return { locale, sourcePath, success: true, noChanges: true };
+          }
+
+          // Read source and target files
+          const sourceContent = await fs.readFile(
+            path.join(process.cwd(), sourcePath),
+            "utf-8",
+          );
+
+          let targetContent = "";
           try {
-            sourceContent = await fs.readFile(
-              path.join(process.cwd(), sourcePath),
+            targetContent = await fs.readFile(
+              path.join(process.cwd(), targetPath),
               "utf-8",
             );
           } catch (error) {
-            // Create source file if it doesn't exist
-            const sourceDir = path.dirname(
-              path.join(process.cwd(), sourcePath),
+            // Create target file if it doesn't exist
+            const targetDir = path.dirname(
+              path.join(process.cwd(), targetPath),
             );
-            await fs.mkdir(sourceDir, { recursive: true });
-            await fs.writeFile(
-              path.join(process.cwd(), sourcePath),
-              "",
-              "utf-8",
-            );
+            await fs.mkdir(targetDir, { recursive: true });
           }
 
-          // Prepare translation prompt
+          // Prepare translation prompt with only new keys
+          const sourceObj =
+            format === "ts"
+              ? Function(
+                  `return ${sourceContent.replace(/export default |as const;/g, "")}`,
+                )()
+              : JSON.parse(sourceContent);
+
+          const newKeysObj: Record<string, string> = {};
+          for (const key of addedKeys) {
+            newKeysObj[key] = sourceObj[key];
+          }
+
           const prompt = dedent`
             You are a professional translator working with ${format.toUpperCase()} files.
             
             Task: Translate the content below from ${source} to ${locale}.
+            Only translate the new keys provided.
 
             ${defaultPrompt}
 
             ${config.instructions ?? ""}
 
-            Source content:
-            ${sourceContent}
+            Source content (new keys only):
+            ${JSON.stringify(newKeysObj, null, 2)}
 
             Return only the translated content with identical structure.
           `;
@@ -84,18 +113,36 @@ export async function translate(targetLocale?: string) {
             prompt,
           });
 
+          // Parse the translated content
+          const translatedObj =
+            format === "ts"
+              ? Function(`return ${text.replace(/as const;?/g, "")}`)()
+              : JSON.parse(text);
+
+          // Merge with existing translations
+          const existingObj = targetContent
+            ? format === "ts"
+              ? Function(
+                  `return ${targetContent.replace(/export default |as const;/g, "")}`,
+                )()
+              : JSON.parse(targetContent)
+            : {};
+
+          const mergedObj = { ...existingObj, ...translatedObj };
+
+          // Format the final content
+          let finalContent =
+            format === "ts"
+              ? `export default ${JSON.stringify(mergedObj, null, 2)} as const;\n`
+              : JSON.stringify(mergedObj, null, 2);
+
           // Run afterTranslate hook if defined
-          let finalContent = text;
           if (config.hooks?.afterTranslate) {
             finalContent = await config.hooks.afterTranslate({
-              content: text,
+              content: finalContent,
               filePath: targetPath,
             });
           }
-
-          // Ensure target directory exists
-          const targetDir = path.dirname(path.join(process.cwd(), targetPath));
-          await fs.mkdir(targetDir, { recursive: true });
 
           // Write translated content
           await fs.writeFile(
@@ -104,7 +151,7 @@ export async function translate(targetLocale?: string) {
             "utf-8",
           );
 
-          return { locale, sourcePath, success: true };
+          return { locale, sourcePath, success: true, addedKeys };
         } catch (error) {
           return { locale, sourcePath, success: false, error };
         }
@@ -117,9 +164,23 @@ export async function translate(targetLocale?: string) {
 
   // Process results
   const failures = results.filter((r) => !r.success);
+  const changes = results.filter((r) => !r.noChanges && r.success);
+
+  s.stop("Translation completed");
+
+  if (changes.length > 0) {
+    for (const result of changes) {
+      console.log(
+        chalk.green(
+          `✓ Translated ${result.addedKeys?.length} new keys for ${result.locale}`,
+        ),
+      );
+    }
+  } else {
+    console.log(chalk.yellow("No new keys to translate"));
+  }
 
   if (failures.length > 0) {
-    s.stop("Translation completed with errors");
     for (const failure of failures) {
       console.error(
         chalk.red(
@@ -128,8 +189,6 @@ export async function translate(targetLocale?: string) {
         failure.error,
       );
     }
-  } else {
-    s.stop("Translation completed successfully");
   }
 
   outro(

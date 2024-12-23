@@ -5,5 +5,6 @@
   },
   "interpolated": "Ha en trevlig dag, {{name}}!",
   "pluralKey_one": "Det här är ett fint exempel.",
-  "pluralKey_other": "Det här är fina exempel."
+  "pluralKey_other": "Det här är fina exempel.",
+  "missing_translation": "Detta bör fungera"
 }

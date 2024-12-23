@@ -77,3 +77,31 @@ export async function getConfig() {
 
   return config;
 }
+
+export function extractChangedKeys(diff: string) {
+  const addedKeys = new Set<string>();
+  const removedKeys = new Set<string>();
+
+  for (const line of diff.split("\n")) {
+    if (line.startsWith("+") && !line.startsWith("+++")) {
+      const match = line.match(/['"]([\w_.]+)['"]/);
+      if (match) addedKeys.add(match[1]);
+    } else if (line.startsWith("-") && !line.startsWith("---")) {
+      const match = line.match(/['"]([\w_.]+)['"]/);
+      if (match) removedKeys.add(match[1]);
+    }
+  }
+
+  // Remove keys that appear in both added and removed (these are modifications)
+  for (const key of addedKeys) {
+    if (removedKeys.has(key)) {
+      addedKeys.delete(key);
+      removedKeys.delete(key);
+    }
+  }
+
+  return {
+    addedKeys: Array.from(addedKeys),
+    removedKeys: Array.from(removedKeys),
+  };
+}

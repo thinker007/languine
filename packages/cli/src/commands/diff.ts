@@ -1,7 +1,7 @@
 import { execSync } from "node:child_process";
 import { intro, outro } from "@clack/prompts";
 import chalk from "chalk";
-import { getConfig } from "../utils.js";
+import { extractChangedKeys, getConfig } from "../utils.js";
 
 export async function diff() {
   intro("Checking for changes in source locale file...");
@@ -25,51 +25,25 @@ export async function diff() {
       process.exit(0);
     }
 
-    // Extract changed/added/removed keys from diff
-    const addedKeys = new Set<string>();
-    const removedKeys = new Set<string>();
+    const { addedKeys, removedKeys } = extractChangedKeys(diff);
 
-    for (const line of diff.split("\n")) {
-      if (line.startsWith("+") && !line.startsWith("+++")) {
-        const match = line.match(/['"]([\w_.]+)['"]/);
-        if (match) addedKeys.add(match[1]);
-      } else if (line.startsWith("-") && !line.startsWith("---")) {
-        const match = line.match(/['"]([\w_.]+)['"]/);
-        if (match) removedKeys.add(match[1]);
-      }
-    }
-
-    // Remove keys that appear in both added and removed (these are modifications)
-    for (const key of addedKeys) {
-      if (removedKeys.has(key)) {
-        addedKeys.delete(key);
-        removedKeys.delete(key);
-      }
-    }
-
-    if (addedKeys.size === 0 && removedKeys.size === 0) {
+    if (addedKeys.length === 0 && removedKeys.length === 0) {
       outro(
         chalk.yellow("No translation keys were added, modified or removed."),
       );
       process.exit(0);
     }
 
-    let message = "";
-    if (addedKeys.size > 0) {
-      message += chalk.green(
-        `Found ${addedKeys.size} added translation key${addedKeys.size === 1 ? "" : "s"}\n`,
-      );
-    }
-    if (removedKeys.size > 0) {
-      message += chalk.red(
-        `Found ${removedKeys.size} removed translation key${removedKeys.size === 1 ? "" : "s"}`,
-      );
-    }
+    const totalChanges = addedKeys.length + removedKeys.length;
+    outro(
+      chalk.blue(
+        `Found ${totalChanges} translation key${totalChanges === 1 ? "" : "s"} changed`,
+      ),
+    );
 
-    outro(message);
     return {
-      addedKeys: Array.from(addedKeys),
-      removedKeys: Array.from(removedKeys),
+      addedKeys,
+      removedKeys,
     };
   } catch (error) {
     outro(chalk.red("Failed to check for changes"));
