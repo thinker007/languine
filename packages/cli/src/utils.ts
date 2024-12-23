@@ -87,7 +87,7 @@ export function extractChangedKeys(diff: string) {
     if (line.startsWith("+") && !line.startsWith("+++")) {
       // Handle both quoted and unquoted keys
       const quotedMatch = line.match(/["']([\w_.#]+)["']/);
-      const unquotedMatch = line.match(/^[+]\s*(\w+):/);
+      const unquotedMatch = line.match(/^[+]\s*(\w+):\s*"[^"]*"/);
 
       if (quotedMatch) {
         addedKeys.add(quotedMatch[1]);
@@ -97,7 +97,7 @@ export function extractChangedKeys(diff: string) {
     } else if (line.startsWith("-") && !line.startsWith("---")) {
       // Handle both quoted and unquoted keys
       const quotedMatch = line.match(/["']([\w_.#]+)["']/);
-      const unquotedMatch = line.match(/^[-]\s*(\w+):/);
+      const unquotedMatch = line.match(/^[-]\s*(\w+):\s*"[^"]*"/);
 
       if (quotedMatch) {
         removedKeys.add(quotedMatch[1]);
