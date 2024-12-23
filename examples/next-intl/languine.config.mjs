@@ -6,7 +6,7 @@ export default {
   },
   files: {
     json: {
-      include: ["locales/[locale].json"]
+      include: ["messages/[locale].json"]
     }
   },
   openai: {
