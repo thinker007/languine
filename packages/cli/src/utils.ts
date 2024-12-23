@@ -5,6 +5,7 @@ import { confirm, outro, text } from "@clack/prompts";
 import chalk from "chalk";
 import dedent from "dedent";
 import type { Config } from "./types.js";
+import { pathToFileURL } from 'url';
 
 export async function getApiKey(name: string, key: string) {
   if (key in process.env) {
@@ -64,7 +65,7 @@ export const configPath = path.join(process.cwd(), "languine.config.mjs");
 export async function getConfig() {
   let config: Config;
   try {
-    const configModule = await import(configPath);
+    const configModule = await import(pathToFileURL(configPath).href);
     config = configModule.default;
   } catch (error) {
     console.error(error);
