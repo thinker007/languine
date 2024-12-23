@@ -1,11 +1,11 @@
 import { execSync } from "node:child_process";
 import fs from "node:fs";
 import path from "node:path";
+import { pathToFileURL } from "node:url";
 import { confirm, outro, text } from "@clack/prompts";
 import chalk from "chalk";
 import dedent from "dedent";
 import type { Config } from "./types.js";
-import { pathToFileURL } from 'url';
 
 export async function getApiKey(name: string, key: string) {
   if (key in process.env) {

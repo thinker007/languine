@@ -1,4 +1,6 @@
 {
+  "name": "@languine/action",
+  "version": "0.1.0",
   "type": "module",
   "dependencies": {
     "octokit": "^4.0.2",
