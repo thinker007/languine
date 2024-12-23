@@ -18,5 +18,7 @@
     "keyPluralMultipleEgArabic_many": "the plural form 4",
     "keyPluralMultipleEgArabic_other": "the plural form 5",
     "keyWithArrayValue": ["multipe", "things"],
-    "keyWithObjectValue": { "valueA": "return this with valueB", "valueB": "more text" }
+    "keyWithObjectValue": { "valueA": "return this with valueB", "valueB": "more text" },
+    "test": "Test"
+
   }

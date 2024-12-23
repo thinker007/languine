@@ -1,0 +1,23 @@
+{
+  "key": "värde",
+  "keyDeep": {
+    "inner": "värde"
+  },
+  "keyNesting": "återanvänd $t(keyDeep.inner)",
+  "keyInterpolate": "ersätt detta {{value}}",
+  "keyInterpolateUnescaped": "ersätt detta {{- value}}",
+  "keyInterpolateWithFormatting": "ersätt detta {{value, format}}",
+  "keyContext_male": "den manliga varianten",
+  "keyContext_female": "den kvinnliga varianten",
+  "keyPluralSimple_one": "singular",
+  "keyPluralSimple_other": "plural",
+  "keyPluralMultipleEgArabic_zero": "pluralform 0",
+  "keyPluralMultipleEgArabic_one": "pluralform 1",
+  "keyPluralMultipleEgArabic_two": "pluralform 2",
+  "keyPluralMultipleEgArabic_few": "pluralform 3",
+  "keyPluralMultipleEgArabic_many": "pluralform 4",
+  "keyPluralMultipleEgArabic_other": "pluralform 5",
+  "keyWithArrayValue": ["flera", "saker"],
+  "keyWithObjectValue": { "valueA": "returnera detta med valueB", "valueB": "mer text" },
+  "test": "Test"
+}
