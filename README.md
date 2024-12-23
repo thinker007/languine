@@ -9,7 +9,7 @@
 ---
 
 ```bash
-$ npx languine@latest
+$ npx languine-cli@latest
 ```
 
 ## What is Languine?
