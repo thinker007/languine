@@ -40,6 +40,7 @@ const command =
     options: [
       { value: "init", label: "Initialize a new Languine configuration" },
       { value: "translate", label: "Translate to target languages" },
+      { value: "add", label: "Add a new language" },
       { value: "instructions", label: "Add custom translation instructions" },
       { value: "diff", label: "Check for changes in source locale file" },
       { value: "clean", label: "Clean unused translations" },
@@ -48,11 +49,12 @@ const command =
   }));
 
 const targetLocale = process.argv[3];
+const force = process.argv.includes("--force") || process.argv.includes("-f");
 
 if (command === "init") {
   init();
 } else if (command === "translate") {
-  translate(targetLocale);
+  translate(targetLocale, force);
 } else if (command === "instructions") {
   instructions();
 } else if (command === "diff") {
@@ -64,6 +66,7 @@ if (command === "init") {
     ${chalk.cyan("init")}          Initialize a new Languine configuration
     ${chalk.cyan("translate")}     Translate to all target locales
     ${chalk.cyan("translate")} ${chalk.gray("<locale>")}    Translate to a specific locale
+    ${chalk.cyan("translate")} ${chalk.gray("--force")}     Force translate all keys
     ${chalk.cyan("instructions")}  Add custom translation instructions
     ${chalk.cyan("diff")}          Check for changes in source locale file
     ${chalk.cyan("clean")}         Clean unused translations

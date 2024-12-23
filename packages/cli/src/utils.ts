@@ -1,4 +1,5 @@
 import { execSync } from "node:child_process";
+import fs from "node:fs";
 import path from "node:path";
 import { confirm, outro, text } from "@clack/prompts";
 import chalk from "chalk";
@@ -104,4 +105,8 @@ export function extractChangedKeys(diff: string) {
     addedKeys: Array.from(addedKeys),
     removedKeys: Array.from(removedKeys),
   };
+}
+
+export function updateConfig(config: Config) {
+  fs.writeFileSync(configPath, `export default ${JSON.stringify(config)}`);
 }

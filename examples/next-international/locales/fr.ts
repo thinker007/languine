@@ -1,7 +1,7 @@
 export default {
   "hello": "Bonjour",
   "welcome": "Bonjour {name} !",
-  "about.you": "Bonjour {name} ! Vous avez {age} ans",
+  "about.you": "Bonjour {name} ! Tu as {age} ans",
   "scope.test": "Un domaine",
   "scope.more.test": "Un domaine",
   "scope.more.param": "Un domaine avec {param}",

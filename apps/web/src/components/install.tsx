@@ -40,6 +40,7 @@ export function Install() {
           <code>{`init          Initialize a new Languine configuration
 translate     Translate to all target locales
 translate     <locale>    Translate to a specific locale
+translate     --force     Force translate all keys
 instructions  Add custom translation instructions
 diff          Check for changes in source locale file
 clean         Clean unused translations
