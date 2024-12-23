@@ -84,6 +84,15 @@ export async function translate(targetLocale?: string) {
             prompt,
           });
 
+          // Run afterTranslate hook if defined
+          let finalContent = text;
+          if (config.hooks?.afterTranslate) {
+            finalContent = await config.hooks.afterTranslate({
+              content: text,
+              filePath: targetPath,
+            });
+          }
+
           // Ensure target directory exists
           const targetDir = path.dirname(path.join(process.cwd(), targetPath));
           await fs.mkdir(targetDir, { recursive: true });
@@ -91,7 +100,7 @@ export async function translate(targetLocale?: string) {
           // Write translated content
           await fs.writeFile(
             path.join(process.cwd(), targetPath),
-            text,
+            finalContent,
             "utf-8",
           );
 

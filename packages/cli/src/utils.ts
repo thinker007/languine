@@ -1,10 +1,9 @@
 import { execSync } from "node:child_process";
-import fs from "node:fs/promises";
 import path from "node:path";
 import { confirm, outro, text } from "@clack/prompts";
 import chalk from "chalk";
 import dedent from "dedent";
-import type { LanguineConfig } from "./types.js";
+import type { Config } from "./types.js";
 
 export async function getApiKey(name: string, key: string) {
   if (key in process.env) {
@@ -59,16 +58,19 @@ export async function getApiKey(name: string, key: string) {
   })();
 }
 
-export const configPath = path.join(process.cwd(), "languine.json");
+export const configPath = path.join(process.cwd(), "languine.config.mjs");
 
 export async function getConfig() {
-  let config: LanguineConfig;
+  let config: Config;
   try {
-    const configFile = await fs.readFile(configPath, "utf-8");
-    config = JSON.parse(configFile);
+    const configModule = await import(configPath);
+    config = configModule.default;
   } catch (error) {
+    console.error(error);
     outro(
-      chalk.red("Could not find languine.json. Run 'languine init' first."),
+      chalk.red(
+        "Could not find languine.config.mjs. Run 'languine init' first.",
+      ),
     );
     process.exit(1);
   }

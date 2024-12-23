@@ -4,6 +4,7 @@
   "type": "module",
   "bin": "dist/index.js",
   "main": "dist/index.js",
+  "types": "dist/index.d.ts",
   "scripts": {
     "clean": "rm -rf .turbo node_modules",
     "lint": "biome check .",

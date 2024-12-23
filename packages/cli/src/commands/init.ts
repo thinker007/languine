@@ -2,6 +2,7 @@ import { execSync } from "node:child_process";
 import fs from "node:fs/promises";
 import path from "node:path";
 import { intro, outro, select, text } from "@clack/prompts";
+import { configPath } from "../utils.js";
 
 export async function init() {
   try {
@@ -46,7 +47,6 @@ export async function init() {
     options: [
       { value: "ts", label: "TypeScript (.ts)" },
       { value: "json", label: "JSON (.json)" },
-      { value: "po", label: "Portable Object (.po)" },
     ],
   })) as string;
 
@@ -62,21 +62,21 @@ export async function init() {
     initialValue: "gpt-4-turbo",
   })) as string;
 
-  const config = {
-    version: require("../../package.json").version,
-    locale: {
-      source: sourceLanguage,
-      targets: targetLanguages.split(",").map((l: string) => l.trim()),
-    },
-    files: {
-      [fileFormat]: {
-        include: [`${filesDirectory}/[locale].${fileFormat}`],
-      },
-    },
-    openai: {
-      model: model,
-    },
-  };
+  const configContent = `export default {
+  version: "${require("../../package.json").version}",
+  locale: {
+    source: "${sourceLanguage}",
+    targets: ${JSON.stringify(targetLanguages.split(",").map((l) => l.trim()))}
+  },
+  files: {
+    ${fileFormat}: {
+      include: ["${filesDirectory}/[locale].${fileFormat}"]
+    }
+  },
+  openai: {
+    model: "${model}"
+  }
+}`;
 
   try {
     await fs.mkdir(path.join(process.cwd(), filesDirectory), {
@@ -113,10 +113,7 @@ export async function init() {
     }
 
     // Write config file
-    await fs.writeFile(
-      path.join(process.cwd(), "languine.json"),
-      JSON.stringify(config, null, 2),
-    );
+    await fs.writeFile(configPath, configContent);
     outro("Configuration file and language files created successfully!");
   } catch (error) {
     outro("Failed to create config and language files");

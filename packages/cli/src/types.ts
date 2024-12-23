@@ -1,4 +1,4 @@
-export interface LanguineConfig {
+export interface Config {
   version: string;
   locale: {
     source: string;
@@ -13,4 +13,10 @@ export interface LanguineConfig {
     model: string;
   };
   instructions?: string;
+  hooks?: {
+    afterTranslate?: (args: {
+      content: string;
+      filePath: string;
+    }) => Promise<string>;
+  };
 }
