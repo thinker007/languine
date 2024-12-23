@@ -103,7 +103,7 @@ export function Commands() {
           step >= 2 ? "opacity-100" : "opacity-0",
         )}
       >
-        │ es,pt,fr
+        │ es, pt, fr
       </span>
       <span
         className={cn(
@@ -169,22 +169,6 @@ export function Commands() {
           step >= 4 ? "opacity-100" : "opacity-0",
         )}
       >
-        │ ○ YAML (.yaml)
-      </span>
-      <span
-        className={cn(
-          "transition-opacity duration-100",
-          step >= 4 ? "opacity-100" : "opacity-0",
-        )}
-      >
-        │ ○ Markdown (.md)
-      </span>
-      <span
-        className={cn(
-          "transition-opacity duration-100",
-          step >= 4 ? "opacity-100" : "opacity-0",
-        )}
-      >
         │
       </span>
 
@@ -239,31 +223,6 @@ export function Commands() {
       <span
         className={cn(
           "transition-opacity duration-100",
-          step >= 5 ? "opacity-100" : "opacity-0",
-        )}
-      >
-        │
-      </span>
-
-      <span
-        className={cn(
-          "transition-opacity duration-100",
-          step >= 6 ? "opacity-100" : "opacity-0",
-        )}
-      >
-        ◆ Which OpenAI model should be used for translations?
-      </span>
-      <span
-        className={cn(
-          "transition-opacity duration-100",
-          step >= 6 ? "opacity-100" : "opacity-0",
-        )}
-      >
-        │ GPT-4 (Default)
-      </span>
-      <span
-        className={cn(
-          "transition-opacity duration-100",
           step >= 6 ? "opacity-100" : "opacity-0",
         )}
       >
@@ -271,8 +230,8 @@ export function Commands() {
       </span>
       <span
         className={cn(
-          "transition-opacity duration-500 -ml-[1.5px]",
-          step >= 7 ? "opacity-100" : "opacity-0",
+          "transition-opacity duration-100 -ml-[1.5px]",
+          step >= 6 ? "opacity-100" : "opacity-0",
         )}
       >
         └ Configuration file and language files created successfully!

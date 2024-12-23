@@ -9,7 +9,5 @@ export default {
   "scope.more.stars#one": "1 étoile sur GitHub",
   "scope.more.stars#other": "{count} étoiles sur GitHub",
   "missing.translation.in.fr": "Cela devrait fonctionner",
-  "cows#one": "Une vache",
-  "cows#other": "{count} vaches",
-  "hello.world2": "Bonjour le monde !"
+  "cows#one": "Une vache"
 } as const;

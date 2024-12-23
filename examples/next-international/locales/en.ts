@@ -10,5 +10,4 @@ export default {
   "scope.more.stars#other": "{count} stars on GitHub",
   "missing.translation.in.fr": "This should work",
   "cows#one": "A cow",
-  "cows#other": "{count} cows",
 } as const;

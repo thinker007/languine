@@ -12,4 +12,5 @@ Translation Requirements:
 - Respect existing whitespace and newline patterns
 - Keep all technical identifiers unchanged
 - Translate only user-facing strings
+- Never add space before a ! or ?
 `;
