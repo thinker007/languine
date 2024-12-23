@@ -19,6 +19,7 @@ export default {
     model: "gpt-4-turbo",
   },
   hooks: {
+    // Optional: Format the content with Biome
     afterTranslate: ({ content, filePath }) => {
       const formatted = biome.formatContent(content.toString(), {
         filePath,

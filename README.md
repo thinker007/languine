@@ -38,7 +38,7 @@ developer-friendly experience.
 
 - Automatically identifies new, modified, or removed translation keys in your
   codebase using Git diff
-- Handles multiple file formats (.json, .ts, .md) with precise parsing and
+- Handles multiple file formats (.json, .ts) with precise parsing and
   file-specific updates
 
 ### 🌍 AI-Powered Translation
@@ -47,7 +47,11 @@ developer-friendly experience.
 - Supports more than 100 languages with natural and consistent results
 - Ensures that translations align with the tone and intent of your original text
 
-## Made with ❤️ from Midday
+### 🪝 Hooks
+
+- Supports hooks to format the content with Biome or Prettier
+
+## Made with 🤍 from Midday
 
 Languine was made from the implementation in [Midday](https://midday.ai), we
 have now extracted it into a standalone CLI tool.
