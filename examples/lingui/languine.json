@@ -2,14 +2,15 @@
   "version": "1.0.0",
   "locale": {
     "source": "en",
-    "targets": ["sv"]
+    "targets": ["de"]
   },
   "files": {
-    "json": {
-      "include": ["locales/[locale].json"]
+    "po": {
+      "include": ["locales/[locale].po"]
     }
   },
   "openai": {
     "model": "gpt-4-turbo"
-  }
+  },
+  "instructions": "Use a formal tone"
 }

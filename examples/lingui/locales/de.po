@@ -1,0 +1,60 @@
+msgid ""
+msgstr ""
+"POT-Creation-Date: 2020-12-04 23:19+0100
+"
+"Mime-Version: 1.0
+"
+"Content-Type: text/plain; charset=utf-8
+"
+"Content-Transfer-Encoding: 8bit
+"
+"X-Generator: @lingui/cli
+"
+"Language: en
+"
+"Project-Id-Version: 
+"
+"Report-Msgid-Bugs-To: 
+"
+"PO-Revision-Date: 
+"
+"Last-Translator: 
+"
+"Language-Team: 
+"
+"Plural-Forms: 
+"
+
+#: src/components/Developers.tsx:23
+msgid "{selected, plural, one {Developer} other {Developers}}"
+msgstr "{selected, plural, one {Entwickler} other {Entwickler}}"
+
+#: src/components/Switcher.tsx:12
+msgid "English"
+msgstr "Englisch"
+
+#. js-lingui-explicit-id
+#: src/components/AboutText.tsx:6
+msgid "next-explanation"
+msgstr "Next.js ist ein Open-Source React Frontend-Entwicklungsframework, das Funktionen wie serverseitiges Rendering und die Erstellung statischer Websites für auf React basierende Webanwendungen ermöglicht. Es ist ein produktionsreifes Framework, das Entwicklern ermöglicht, schnell statische und dynamische JAMstack-Websites zu erstellen und wird von vielen großen Unternehmen weit verbreitet eingesetzt."
+
+#: src/components/Developers.tsx:12
+msgid "Plural Test: How many developers?"
+msgstr "Pluraltest: Wie viele Entwickler?"
+
+#: src/components/Switcher.tsx:13
+msgid "Serbian"
+msgstr "Serbisch"
+
+#: src/components/Switcher.tsx:14
+msgid "Spanish"
+msgstr "Spanisch"
+
+#: src/app/[lang]/layout.tsx:16
+#: src/components/HomePage.tsx:21
+msgid "Translation Demo"
+msgstr "Übersetzungsdemo"
+
+#: src/components/HomePage.tsx:28
+msgid "Welcome to <0>Next.js!</0>"
+msgstr "Willkommen bei <0>Next.js!</0>"

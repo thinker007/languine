@@ -4,7 +4,6 @@ import path from "node:path";
 import { intro, outro, select, text } from "@clack/prompts";
 
 export async function init() {
-  // Check if we're in a git repository
   try {
     execSync("git rev-parse --is-inside-work-tree", { stdio: "ignore" });
   } catch (error) {
@@ -16,105 +15,42 @@ export async function init() {
 
   intro("Let's set up your i18n configuration");
 
-  const sourceLanguage = await select({
+  const sourceLanguage = (await select({
     message: "What is your source language?",
     options: [
-      { value: "en_US", label: "English (US)" },
-      { value: "es_ES", label: "Spanish (ES)" },
-      { value: "fr_FR", label: "French (FR)" },
-      { value: "de_DE", label: "German (DE)" },
+      { value: "en", label: "English" },
+      { value: "es", label: "Spanish" },
+      { value: "fr", label: "French" },
+      { value: "de", label: "German" },
     ],
-  });
+  })) as string;
 
-  const targetLanguages = await text({
+  const targetLanguages = (await text({
     message: "What languages do you want to translate to?",
-    placeholder: "es_ES,fr_FR,de_DE,zh_CN,ja_JP,pt_PT",
+    placeholder: "es, fr, de, zh, ja, pt",
     validate: (value) => {
       if (!value) return "Please enter at least one language";
-
-      const codes = value.split(",").map((code) => code.trim());
-      const validCodes = new Set([
-        "es_ES",
-        "fr_FR",
-        "de_DE",
-        "it_IT",
-        "pt_PT",
-        "ru_RU",
-        "zh_CN",
-        "ja_JP",
-        "ko_KR",
-        "ar_SA",
-        "hi_IN",
-        "af_ZA",
-        "bg_BG",
-        "bn_BD",
-        "ca_ES",
-        "cs_CZ",
-        "cy_GB",
-        "da_DK",
-        "el_GR",
-        "en_US",
-        "et_EE",
-        "fa_IR",
-        "fi_FI",
-        "ga_IE",
-        "gu_IN",
-        "he_IL",
-        "hr_HR",
-        "hu_HU",
-        "id_ID",
-        "kn_IN",
-        "lt_LT",
-        "lv_LV",
-        "mk_MK",
-        "ml_IN",
-        "mr_IN",
-        "ms_MY",
-        "mt_MT",
-        "nl_NL",
-        "no_NO",
-        "pa_IN",
-        "pl_PL",
-        "ro_RO",
-        "sk_SK",
-        "sl_SI",
-        "sq_AL",
-        "sr_RS",
-        "sv_SE",
-        "sw_TZ",
-        "ta_IN",
-        "te_IN",
-        "th_TH",
-        "tr_TR",
-        "uk_UA",
-        "ur_PK",
-        "vi_VN",
-      ]);
-
-      const invalidCodes = codes.filter((code) => !validCodes.has(code));
-      if (invalidCodes.length > 0) {
-        return `Invalid language code(s): ${invalidCodes.join(", ")}`;
-      }
       return;
     },
-  });
+  })) as string;
 
-  const filesDirectory = await text({
+  const filesDirectory = (await text({
     message: "Where should language files be stored?",
     placeholder: "src/locales",
     defaultValue: "src/locales",
     validate: () => undefined,
-  });
+  })) as string;
 
-  const fileFormat = await select({
+  const fileFormat = (await select({
     message: "What format should language files use?",
     options: [
       { value: "ts", label: "TypeScript (.ts)" },
       { value: "json", label: "JSON (.json)" },
+      { value: "po", label: "Portable Object (.po)" },
     ],
-  });
+  })) as string;
 
-  const model = await select({
+  const model = (await select({
     message: "Which OpenAI model should be used for translations?",
     options: [
       { value: "gpt-4-turbo", label: "GPT-4 Turbo (Default)" },
@@ -124,13 +60,13 @@ export async function init() {
       { value: "gpt-3.5-turbo", label: "GPT-3.5 Turbo" },
     ],
     initialValue: "gpt-4-turbo",
-  });
+  })) as string;
 
   const config = {
     version: require("../../package.json").version,
     locale: {
       source: sourceLanguage,
-      targets: targetLanguages.split(",").map((l) => l.trim()),
+      targets: targetLanguages.split(",").map((l: string) => l.trim()),
     },
     files: {
       [fileFormat]: {
@@ -143,15 +79,13 @@ export async function init() {
   };
 
   try {
-    // Create locales directory if it doesn't exist
     await fs.mkdir(path.join(process.cwd(), filesDirectory), {
       recursive: true,
     });
 
-    // Create source language file if it doesn't exist
     const sourceFile = path.join(
       process.cwd(),
-      `${filesDirectory}/${String(sourceLanguage)}.${String(fileFormat)}`,
+      `${filesDirectory}/${sourceLanguage}.${fileFormat}`,
     );
     if (
       !(await fs
@@ -162,13 +96,11 @@ export async function init() {
       await fs.writeFile(sourceFile, "", "utf-8");
     }
 
-    // Create target language files if they don't exist
-    const targetLangs =
-      typeof targetLanguages === "string" ? targetLanguages.split(",") : [];
+    const targetLangs = targetLanguages.split(",");
     for (const targetLang of targetLangs.map((l: string) => l.trim())) {
       const targetFile = path.join(
         process.cwd(),
-        `${filesDirectory}/${String(targetLang)}.${String(fileFormat)}`,
+        `${filesDirectory}/${targetLang}.${fileFormat}`,
       );
       if (
         !(await fs

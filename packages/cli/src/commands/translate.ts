@@ -6,26 +6,12 @@ import { generateText } from "ai";
 import chalk from "chalk";
 import dedent from "dedent";
 import { prompt as defaultPrompt } from "../prompt.js";
-import type { LanguineConfig } from "../types.js";
-import { getApiKey } from "../utils.js";
+import { getApiKey, getConfig } from "../utils.js";
 
 export async function translate(targetLocale?: string) {
   intro("Starting translation process...");
 
-  // Read config file
-  let config: LanguineConfig;
-  try {
-    const configFile = await fs.readFile(
-      path.join(process.cwd(), "languine.json"),
-      "utf-8",
-    );
-    config = JSON.parse(configFile);
-  } catch (error) {
-    outro(
-      chalk.red("Could not find languine.json. Run 'languine init' first."),
-    );
-    process.exit(1);
-  }
+  const config = await getConfig();
 
   const { source, targets } = config.locale;
   const locales = targetLocale ? [targetLocale] : targets;

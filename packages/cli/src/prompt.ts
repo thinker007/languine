@@ -7,4 +7,5 @@ Requirements:
 - Ensure translations are natural and culturally appropriate
 - Do not add or remove any code elements
 - Do not include comments or explanatory text
+- Never change the structure or format of the source content, for example don't change \n to a new line
 `;

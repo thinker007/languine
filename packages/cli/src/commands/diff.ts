@@ -1,27 +1,13 @@
 import { execSync } from "node:child_process";
-import fs from "node:fs/promises";
-import path from "node:path";
 import { intro, outro } from "@clack/prompts";
 import chalk from "chalk";
-import type { LanguineConfig } from "../types.js";
+import { getConfig } from "../utils.js";
 
 export async function diff() {
   intro("Checking for changes in source locale file...");
 
   try {
-    // Read config file
-    const configPath = path.join(process.cwd(), "languine.json");
-    let config: LanguineConfig;
-
-    try {
-      const configContent = await fs.readFile(configPath, "utf-8");
-      config = JSON.parse(configContent);
-    } catch (error) {
-      outro(
-        chalk.red("Could not find languine.json. Run 'languine init' first."),
-      );
-      process.exit(1);
-    }
+    const config = await getConfig();
 
     // Get source locale file path from config
     const sourceLocale = config.locale.source;
@@ -71,17 +57,20 @@ export async function diff() {
     let message = "";
     if (addedKeys.size > 0) {
       message += chalk.green(
-        `Found ${addedKeys.size} added translation key${addedKeys.size === 1 ? '' : 's'}\n`,
+        `Found ${addedKeys.size} added translation key${addedKeys.size === 1 ? "" : "s"}\n`,
       );
     }
     if (removedKeys.size > 0) {
       message += chalk.red(
-        `Found ${removedKeys.size} removed translation key${removedKeys.size === 1 ? '' : 's'}`,
+        `Found ${removedKeys.size} removed translation key${removedKeys.size === 1 ? "" : "s"}`,
       );
     }
 
     outro(message);
-    return { addedKeys: Array.from(addedKeys), removedKeys: Array.from(removedKeys) };
+    return {
+      addedKeys: Array.from(addedKeys),
+      removedKeys: Array.from(removedKeys),
+    };
   } catch (error) {
     outro(chalk.red("Failed to check for changes"));
     console.error(error);

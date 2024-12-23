@@ -24,7 +24,7 @@ console.log(
 
 console.log(
   chalk.gray(dedent`
-    Automated AI localization for your applications.
+    Translate your application with Languine CLI powered by AI.
     Website: ${chalk.bold("https://languine.ai")}
   `),
 );

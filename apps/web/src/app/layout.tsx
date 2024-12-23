@@ -33,6 +33,7 @@ export default function RootLayout({
           clientId={process.env.NEXT_PUBLIC_OPEN_PANEL_CLIENT_ID!}
           clientSecret={process.env.OPEN_PANEL_CLIENT_SECRET!}
           trackScreenViews={true}
+          disabled={process.env.NODE_ENV !== "production"}
         />
         {children}
       </body>

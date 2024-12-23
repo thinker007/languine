@@ -1,8 +1,7 @@
 import fs from "node:fs/promises";
-import path from "node:path";
 import { intro, outro, text } from "@clack/prompts";
 import chalk from "chalk";
-import type { LanguineConfig } from "../types.js";
+import { configPath, getConfig } from "../utils.js";
 
 export async function instructions() {
   intro("Let's customize your translation prompt");
@@ -17,19 +16,7 @@ export async function instructions() {
   });
 
   try {
-    // Read config file
-    const configPath = path.join(process.cwd(), "languine.json");
-    let config: LanguineConfig;
-
-    try {
-      const configContent = await fs.readFile(configPath, "utf-8");
-      config = JSON.parse(configContent);
-    } catch (error) {
-      outro(
-        chalk.red("Could not find languine.json. Run 'languine init' first."),
-      );
-      process.exit(1);
-    }
+    const config = await getConfig();
 
     // Add custom instructions to config
     config.instructions = customInstructions as string;
