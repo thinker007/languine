@@ -13,6 +13,7 @@ export default function Page() {
         <TabsList className="w-full flex justify-start rounded-none bg-[#1B1B1B]">
           <TabsTrigger value="get-started">Get Started</TabsTrigger>
           <TabsTrigger value="install">Install</TabsTrigger>
+          <TabsTrigger value="about">About</TabsTrigger>
           <a href="https://github.com/midday-ai/languine">
             <button
               className="text-sm font-medium h-full px-4 text-primary"
@@ -45,6 +46,56 @@ export default function Page() {
         </TabsContent>
         <TabsContent value="install">
           <Install />
+        </TabsContent>
+        <TabsContent value="about">
+          <div className="text-sm font-mono space-y-6 max-w-2xl">
+            <p>
+              Languine helps developers focus on building features, not
+              wrestling with localization challenges. With its robust tooling
+              and AI capabilities, it transforms what was once a tedious, manual
+              process into an automated, developer-friendly experience.
+            </p>
+            <p>
+              Powered by modern AI models, Languine delivers contextually
+              accurate translations across 100+ languages in seconds. Its
+              automation-first approach detects changes via Git diff to
+              automatically update, add, or remove translations as needed.
+            </p>
+            <p>
+              The smart detection system identifies new, modified, or removed
+              translation keys in your codebase, handling multiple file formats
+              (.json, .ts, .md) with precise parsing and file-specific updates.
+            </p>
+            <p>
+              Built with TypeScript and designed for developers, Languine
+              integrates natively with version control systems and your
+              preferred workflow. It helps maintain uniform tone and style
+              across all translated content.
+            </p>
+
+            <p>
+              Special thanks to{" "}
+              <a
+                href="https://vercel.com?utm_source=languine"
+                className="underline"
+              >
+                Vercel
+              </a>{" "}
+              for the AI SDK.
+            </p>
+            <p>
+              Made with 🤍 by Midday - your all-in-one tool for invoicing, time
+              tracking, file reconciliation, storage, financial overview & AI
+              assistance for freelancers. Find us on{" "}
+              <a
+                href="https://github.com/midday-ai/languine"
+                className="underline"
+              >
+                GitHub
+              </a>
+              .
+            </p>
+          </div>
         </TabsContent>
       </div>
     </Tabs>
