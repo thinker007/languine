@@ -6,13 +6,13 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 export default function Page() {
   return (
     <Tabs
-      defaultValue="how-it-works"
+      defaultValue="get-started"
       className="h-screen w-screen overflow-hidden"
     >
       <div className="flex justify-between bg-[#1B1B1B]">
         <TabsList className="w-full flex justify-start rounded-none bg-[#1B1B1B]">
-          <TabsTrigger value="how-it-works">How it works</TabsTrigger>
-          <TabsTrigger value="install">Install</TabsTrigger>
+          <TabsTrigger value="get-started">Get started</TabsTrigger>
+          <TabsTrigger value="documentation">Documentation</TabsTrigger>
           <TabsTrigger value="about">About</TabsTrigger>
           <a href="https://github.com/midday-ai/languine">
             <button
@@ -37,14 +37,14 @@ export default function Page() {
       </div>
 
       <div className="p-6 mt-4 h-full overflow-y-auto pb-[100px]">
-        <TabsContent value="how-it-works">
+        <TabsContent value="get-started">
           <Logo />
           <div className="text-sm font-mono">
             <p>Translate your application with Languine CLI powered by AI.</p>
             <Commands />
           </div>
         </TabsContent>
-        <TabsContent value="install">
+        <TabsContent value="documentation">
           <Install />
         </TabsContent>
         <TabsContent value="about">

@@ -1,0 +1,16 @@
+jobs:
+  translate:
+    name: Run translation
+    runs-on: ubuntu-latest
+    permissions:
+      actions: write
+      contents: write
+      pull-requests: write
+    steps:
+      - uses: actions/checkout@v4
+      - name: Languine
+        uses: midday-ai/languine@main
+        env:
+          GH_TOKEN: ${{ github.token }}
+        with:
+          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
