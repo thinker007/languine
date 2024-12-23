@@ -7,7 +7,7 @@ export function Install() {
   const [copied, setCopied] = useState(false);
 
   const copyCommand = () => {
-    navigator.clipboard.writeText("npx languine@latest");
+    navigator.clipboard.writeText("npx @languine/cli@latest");
     setCopied(true);
     setTimeout(() => setCopied(false), 1000);
   };
