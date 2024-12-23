@@ -19,7 +19,7 @@ export function Install() {
         <p>Install Languine CLI</p>
 
         <div className="flex items-center mt-4 space-x-2">
-          <span className="text-primary">$ npx @languine/cli@latest</span>
+          <span className="text-primary">$ npx @languine/cli</span>
           <button
             type="button"
             onClick={copyCommand}

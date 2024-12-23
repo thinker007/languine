@@ -85,11 +85,25 @@ export function extractChangedKeys(diff: string) {
 
   for (const line of diff.split("\n")) {
     if (line.startsWith("+") && !line.startsWith("+++")) {
-      const match = line.match(/['"]([\w_.]+)['"]/);
-      if (match) addedKeys.add(match[1]);
+      // Handle both quoted and unquoted keys
+      const quotedMatch = line.match(/["']([\w_.#]+)["']/);
+      const unquotedMatch = line.match(/^[+]\s*(\w+):/);
+
+      if (quotedMatch) {
+        addedKeys.add(quotedMatch[1]);
+      } else if (unquotedMatch) {
+        addedKeys.add(unquotedMatch[1]);
+      }
     } else if (line.startsWith("-") && !line.startsWith("---")) {
-      const match = line.match(/['"]([\w_.]+)['"]/);
-      if (match) removedKeys.add(match[1]);
+      // Handle both quoted and unquoted keys
+      const quotedMatch = line.match(/["']([\w_.#]+)["']/);
+      const unquotedMatch = line.match(/^[-]\s*(\w+):/);
+
+      if (quotedMatch) {
+        removedKeys.add(quotedMatch[1]);
+      } else if (unquotedMatch) {
+        removedKeys.add(unquotedMatch[1]);
+      }
     }
   }
 
