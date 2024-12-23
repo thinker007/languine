@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="https://github.com/midday-ai/languine/blob/main/apps/web/src/app/opengraph-image.png" width="500" />
+  <img src="https://github.com/midday-ai/languine/blob/main/apps/web/src/app/opengraph-image.png" />
 </p>
 
 <p align="center">
