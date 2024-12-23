@@ -5,6 +5,7 @@ export function Logo() {
       width={731}
       height={128}
       fill="none"
+      className="-ml-[180px] scale-50 md:scale-100 md:-ml-0"
     >
       <path
         fill="#F5F5F3"
