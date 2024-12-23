@@ -1,21 +1,22 @@
 {
-    "name": "@languine/core",
-    "private": true,
-    "workspaces": ["packages/*", "apps/*"],
-    "scripts": {
-        "build": "turbo build",
-        "clean": "git clean -xdf node_modules",
-        "clean:workspaces": "turbo clean",
-        "dev": "turbo dev --parallel",
-        "test": "turbo test --parallel",
-        "format": "biome format --write .",
-        "lint": "turbo lint && manypkg check",
-        "typecheck": "turbo typecheck"
-    },
-    "dependencies": {
-        "@biomejs/biome": "^1.9.4",
-        "turbo": "2.3.3",
-        "typescript": "^5.7.2"
-    },
-    "packageManager": "bun@1.1.42"
+  "name": "@languine/core",
+  "version": "1.0.0",
+  "private": true,
+  "workspaces": ["packages/*", "apps/*"],
+  "scripts": {
+    "build": "turbo build",
+    "clean": "git clean -xdf node_modules",
+    "clean:workspaces": "turbo clean",
+    "dev": "turbo dev --parallel",
+    "test": "turbo test --parallel",
+    "format": "biome format --write .",
+    "lint": "turbo lint && manypkg check",
+    "typecheck": "turbo typecheck"
+  },
+  "dependencies": {
+    "@biomejs/biome": "^1.9.4",
+    "turbo": "2.3.3",
+    "typescript": "^5.7.2"
+  },
+  "packageManager": "bun@1.1.42"
 }
