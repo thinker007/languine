@@ -122,6 +122,18 @@ export function extractChangedKeys(diff: string) {
   };
 }
 
+export function getChangedContent(diff: string) {
+  return diff
+    .split("\n")
+    .flatMap((v) => {
+      if (v.startsWith("-") && !v.startsWith("---")) return [];
+      if (v.startsWith("+") && !v.startsWith("+++")) return v.slice(1);
+
+      return v;
+    })
+    .join("\n");
+}
+
 export function updateConfig(config: Config) {
   fs.writeFileSync(configPath, `export default ${JSON.stringify(config)}`);
 }

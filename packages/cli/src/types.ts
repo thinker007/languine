@@ -1,3 +1,5 @@
+import type { LanguageModelV1 } from "ai";
+
 export interface Config {
   version: string;
   locale: {
@@ -23,37 +25,25 @@ export interface Config {
 
 export interface PromptOptions {
   format: string;
+  content: string;
+  contentLocale: string;
 
   targetLocale: string;
-  sourceLocale: string;
-
-  force: boolean;
-
-  diff: string;
-  content: string;
 
   config: Config;
+  model: LanguageModelV1;
 }
 
-export type PromptResult =
-  | {
-      type: "success";
-      prompt: string;
-    }
-  | {
-      type: "skip";
-    };
+export interface PromptResult {
+  content: string;
+}
 
-export interface UpdateOptions {
-  promptResult: string;
-  prompt: Extract<PromptResult, { type: "success" }>;
-
-  force: boolean;
-
+export interface UpdateOptions extends PromptOptions {
   /**
-   * Content to update (translated file)
+   * Content to update (translated content)
    */
-  content?: string;
+  previousTranslation: string;
+  diff: string;
 }
 
 export interface UpdateResult {
@@ -66,3 +56,8 @@ export interface UpdateResult {
 }
 
 export type Awaitable<T> = T | Promise<T>;
+
+export interface Translator {
+  onNew: (options: PromptOptions) => Awaitable<PromptResult>;
+  onUpdate: (options: UpdateOptions) => Awaitable<UpdateResult>;
+}

@@ -3,10 +3,10 @@ import fs from "node:fs/promises";
 import path from "node:path";
 import { createOpenAI } from "@ai-sdk/openai";
 import { intro, outro, spinner } from "@clack/prompts";
-import { generateText } from "ai";
 import chalk from "chalk";
 import { getApiKey, getConfig } from "../utils.js";
-import { getAdapter } from "../adapters/index.js";
+import { getTranslator } from "../translators/index.js";
+import type { PromptOptions, UpdateResult } from "../types.js";
 
 export async function translate(targetLocale?: string, force: boolean = false) {
   intro("Starting translation process...");
@@ -30,6 +30,7 @@ export async function translate(targetLocale?: string, force: boolean = false) {
   const openai = createOpenAI({
     apiKey: await getApiKey("OpenAI", "OPENAI_API_KEY"),
   });
+  const model = openai(config.openai.model);
 
   const s = spinner();
   s.start("Checking for changes and translating to target locales...");
@@ -61,34 +62,9 @@ export async function translate(targetLocale?: string, force: boolean = false) {
             "utf-8",
           );
 
-          const adapter = await getAdapter(format);
-          if (!adapter) {
-            throw new Error(`No available adapter for format: ${format}`);
-          }
-
-          const prompt = await adapter.onPrompt({
-            config,
-            content: sourceContent,
-            diff: diff ?? "",
-            force,
-            format,
-            sourceLocale: source,
-            targetLocale: locale,
-          });
-
-          if (prompt.type === "skip") {
-            return { locale, sourcePath, success: true, noChanges: true };
-          }
-
-          // Get translation from OpenAI
-          const { text } = await generateText({
-            model: openai(config.openai.model),
-            prompt: prompt.prompt,
-          });
-
-          let targetContent = undefined;
+          let previousTranslation = undefined;
           try {
-            targetContent = await fs.readFile(
+            previousTranslation = await fs.readFile(
               path.join(process.cwd(), targetPath),
               "utf-8",
             );
@@ -100,12 +76,29 @@ export async function translate(targetLocale?: string, force: boolean = false) {
             await fs.mkdir(targetDir, { recursive: true });
           }
 
-          let { content: finalContent, summary } = await adapter.onUpdate({
-            force,
-            prompt,
-            promptResult: text,
-            content: targetContent,
-          });
+          const adapter = await getTranslator(format);
+          if (!adapter) {
+            throw new Error(`No available adapter for format: ${format}`);
+          }
+
+          const options: PromptOptions = {
+            config,
+            contentLocale: source,
+            format,
+            model,
+            targetLocale: locale,
+            content: sourceContent,
+          };
+
+          let { content: finalContent, summary } = (
+            previousTranslation
+              ? await adapter.onUpdate({
+                  ...options,
+                  previousTranslation,
+                  diff,
+                })
+              : await adapter.onNew(options)
+          ) as UpdateResult;
 
           // Run afterTranslate hook if defined
           if (config.hooks?.afterTranslate) {
