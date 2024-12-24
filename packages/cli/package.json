@@ -23,6 +23,8 @@
     "diff": "^7.0.0",
     "dotenv": "^16.4.7",
     "simple-git": "^3.27.0",
+    "ollama": "^0.5.11",
+    "ollama-ai-provider": "^1.1.0",
     "zod": "^3.24.1"
   },
   "devDependencies": {

@@ -1,12 +1,27 @@
 import fs from "node:fs/promises";
 import path from "node:path";
-import { createOpenAI } from "@ai-sdk/openai";
+import { type OpenAIProvider, createOpenAI } from "@ai-sdk/openai";
 import { intro, outro, spinner } from "@clack/prompts";
 import chalk from "chalk";
+import { type OllamaProvider, createOllama } from "ollama-ai-provider";
 import { simpleGit } from "simple-git";
 import { getTranslator } from "../translators/index.js";
 import type { PromptOptions, UpdateResult } from "../types.js";
+import type { Config, Provider } from "../types.js";
 import { getApiKey, getConfig } from "../utils.js";
+
+const providersMap: Record<Provider, OpenAIProvider | OllamaProvider> = {
+  openai: createOpenAI({
+    apiKey: await getApiKey("OpenAI", "OPENAI_API_KEY"),
+  }),
+  ollama: createOllama(),
+};
+
+function getModel(config: Config) {
+  const provider = providersMap[config.llm.provider];
+
+  return provider(config.llm.model);
+}
 
 export async function translate(targetLocale?: string, force = false) {
   intro("Starting translation process...");
@@ -33,7 +48,7 @@ export async function translate(targetLocale?: string, force = false) {
     apiKey: await getApiKey("OpenAI", "OPENAI_API_KEY"),
   });
 
-  const model = openai(config.openai.model);
+  const model = getModel(config);
 
   const s = spinner();
   s.start("Checking for changes and translating to target locales...");
