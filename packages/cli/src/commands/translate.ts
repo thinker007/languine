@@ -91,7 +91,7 @@ export async function translate(targetLocale?: string, force: boolean = false) {
           };
 
           let { content: finalContent, summary } = (
-            previousTranslation
+            previousTranslation && !force
               ? await adapter.onUpdate({
                   ...options,
                   previousTranslation,

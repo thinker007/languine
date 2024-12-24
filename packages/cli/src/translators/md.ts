@@ -30,15 +30,13 @@ export const markdown: Translator = {
     const parsedDiff = extractDiff(options.diff);
     const linesToTranslate = parsedDiff.translate;
 
-    const resultPrompt = dedent`
-         Translate only ${linesToTranslate.map((num) => `line ${num + 1}`).join(", ")}, and return in the form of a JSON array like:
-        ${JSON.stringify(linesToTranslate.map((num) => `translated content of line ${num + 1}`))}`;
-
     const { object: arr } = await generateObject({
       model: options.model,
       schema: z.array(z.string()),
       prompt: getPrompt(
-        `${resultPrompt}
+        `
+Translate only ${linesToTranslate.map((num) => `line ${num + 1}`).join(", ")}, and return in the form of a JSON array like:
+${JSON.stringify(linesToTranslate.map((num) => `translated content of line ${num + 1}`))}
 
 Source Content:
 ${options.content}`,

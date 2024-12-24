@@ -33,18 +33,17 @@ export const javascript: Translator = {
       translatedObj = object as object;
     }
 
-    const finalObj = {
-      ...parse(options.previousTranslation),
-      ...translatedObj,
-    };
+    const output = parse(options.previousTranslation);
 
     for (const key of changes.removedKeys) {
-      delete finalObj[key];
+      delete output[key];
     }
+
+    Object.assign(output, translatedObj);
 
     return {
       summary: `Translated ${Object.keys(translatedObj).length} new keys`,
-      content: `export default ${JSON.stringify(finalObj, null, 2)} as const;\n`,
+      content: `export default ${JSON.stringify(output, null, 2)} as const;\n`,
     };
   },
   async onNew(options) {

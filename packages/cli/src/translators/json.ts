@@ -22,18 +22,20 @@ export const json: Translator = {
       }).then((res) => res.object as object);
     }
 
-    const mapped = {
+    const output = {
       ...JSON.parse(options.previousTranslation),
-      ...(translated as object),
+      ...translated,
     };
 
     for (const key of changes.removedKeys) {
-      delete mapped[key];
+      if (!translated || !Object.keys(translated).includes(key)) {
+        delete output[key];
+      }
     }
 
     return {
       summary: `Translated ${changes.addedKeys.length} new keys`,
-      content: JSON.stringify(mapped, null, 2),
+      content: JSON.stringify(output, null, 2),
     };
   },
   async onNew(options) {
