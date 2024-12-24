@@ -5,11 +5,10 @@ import { createOpenAI } from "@ai-sdk/openai";
 import { intro, outro, spinner } from "@clack/prompts";
 import { generateText } from "ai";
 import chalk from "chalk";
-import dedent from "dedent";
-import { prompt as defaultPrompt } from "../prompt.js";
-import { extractChangedKeys, getApiKey, getConfig } from "../utils.js";
+import { getApiKey, getConfig } from "../utils.js";
+import { getAdapter } from "../adapters/index.js";
 
-export async function translate(targetLocale?: string, force?: boolean) {
+export async function translate(targetLocale?: string, force: boolean = false) {
   intro("Starting translation process...");
 
   const config = await getConfig();
@@ -43,22 +42,15 @@ export async function translate(targetLocale?: string, force?: boolean) {
         const targetPath = pattern.replace("[locale]", locale);
 
         try {
-          let addedKeys: string[] = [];
+          let diff: string | undefined;
 
           if (!force) {
             // Get git diff for source file if not force translating
-            const diff = execSync(`git diff HEAD -- ${sourcePath}`, {
+            diff = execSync(`git diff HEAD -- ${sourcePath}`, {
               encoding: "utf-8",
             });
 
             if (!diff) {
-              return { locale, sourcePath, success: true, noChanges: true };
-            }
-
-            const changes = extractChangedKeys(diff);
-            addedKeys = changes.addedKeys;
-
-            if (addedKeys.length === 0) {
               return { locale, sourcePath, success: true, noChanges: true };
             }
           }
@@ -68,6 +60,36 @@ export async function translate(targetLocale?: string, force?: boolean) {
             path.join(process.cwd(), sourcePath),
             "utf-8",
           );
+
+          const adapter = getAdapter(format);
+          if (!adapter) {
+            return {
+              locale,
+              sourcePath,
+              success: false,
+              error: `No available adapter for format: ${format}`,
+            };
+          }
+
+          const prompt = await adapter.onPrompt({
+            config,
+            content: sourceContent,
+            diff: diff ?? "",
+            force,
+            format,
+            sourceLocale: source,
+            targetLocale: locale,
+          });
+
+          if (prompt.type === "skip") {
+            return { locale, sourcePath, success: true, noChanges: true };
+          }
+
+          // Get translation from OpenAI
+          const { text } = await generateText({
+            model: openai(config.openai.model),
+            prompt: prompt.prompt,
+          });
 
           let targetContent = "";
           try {
@@ -83,68 +105,12 @@ export async function translate(targetLocale?: string, force?: boolean) {
             await fs.mkdir(targetDir, { recursive: true });
           }
 
-          // Parse source content
-          const sourceObj =
-            format === "ts"
-              ? Function(
-                  `return ${sourceContent.replace(/export default |as const;/g, "")}`,
-                )()
-              : JSON.parse(sourceContent);
-
-          // If force is true, translate everything. Otherwise only new keys
-          const keysToTranslate = force ? Object.keys(sourceObj) : addedKeys;
-          const contentToTranslate: Record<string, string> = {};
-          for (const key of keysToTranslate) {
-            contentToTranslate[key] = sourceObj[key];
-          }
-
-          const prompt = dedent`
-            You are a professional translator working with ${format.toUpperCase()} files.
-            
-            Task: Translate the content below from ${source} to ${locale}.
-            ${force ? "" : "Only translate the new keys provided."}
-
-            ${defaultPrompt}
-
-            ${config.instructions ?? ""}
-
-            Source content ${force ? "" : "(new keys only)"}:
-            ${JSON.stringify(contentToTranslate, null, 2)}
-
-            Return only the translated content with identical structure.
-          `;
-
-          // Get translation from OpenAI
-          const { text } = await generateText({
-            model: openai(config.openai.model),
-            prompt,
+          let { content: finalContent, summary } = await adapter.onUpdate({
+            force,
+            prompt: prompt.prompt,
+            promptResult: text,
+            content: targetContent,
           });
-
-          // Parse the translated content
-          const translatedObj =
-            format === "ts"
-              ? Function(`return ${text.replace(/as const;?/g, "")}`)()
-              : JSON.parse(text);
-
-          // Merge with existing translations if not force translating
-          const finalObj = force
-            ? translatedObj
-            : {
-                ...(targetContent
-                  ? format === "ts"
-                    ? Function(
-                        `return ${targetContent.replace(/export default |as const;/g, "")}`,
-                      )()
-                    : JSON.parse(targetContent)
-                  : {}),
-                ...translatedObj,
-              };
-
-          // Format the final content
-          let finalContent =
-            format === "ts"
-              ? `export default ${JSON.stringify(finalObj, null, 2)} as const;\n`
-              : JSON.stringify(finalObj, null, 2);
 
           // Run afterTranslate hook if defined
           if (config.hooks?.afterTranslate) {
@@ -165,7 +131,7 @@ export async function translate(targetLocale?: string, force?: boolean) {
             locale,
             sourcePath,
             success: true,
-            addedKeys: keysToTranslate,
+            summary,
           };
         } catch (error) {
           return { locale, sourcePath, success: false, error };
@@ -187,7 +153,7 @@ export async function translate(targetLocale?: string, force?: boolean) {
     for (const result of changes) {
       console.log(
         chalk.green(
-          `✓ Translated ${result.addedKeys?.length} ${force ? "total" : "new"} keys for ${result.locale}`,
+          `✓ Translated ${result.summary ?? "content"} for ${result.locale}`,
         ),
       );
     }

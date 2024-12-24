@@ -1,4 +1,7 @@
-export const prompt = `
+import dedent from "dedent";
+import type { PromptOptions } from "./types.js";
+
+export const promptJson = `
 Translation Requirements:
 - Maintain exact file structure, indentation, and formatting
 - Only translate text content within quotation marks
@@ -14,3 +17,26 @@ Translation Requirements:
 - Translate only user-facing strings
 - Never add space before a ! or ?
 `;
+
+/**
+ * Create prompt for record-like objects
+ */
+export function createRecordPrompt(
+  parsedContent: Record<string, string>,
+  options: PromptOptions,
+) {
+  return dedent`
+        You are a professional translator working with ${options.format.toUpperCase()} files.
+            
+        Task: Translate the content below from ${options.sourceLocale} to ${options.targetLocale}.
+        ${options.force ? "" : "Only translate the new keys provided."}
+
+        ${promptJson}
+        ${options.config.instructions ?? ""}
+
+        Source content ${options.force ? "" : "(new keys only)"}:
+        ${JSON.stringify(parsedContent, null, 2)}
+
+        Return only the translated content with identical structure.
+    `;
+}
