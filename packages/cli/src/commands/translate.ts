@@ -42,7 +42,7 @@ export async function translate(targetLocale?: string, force: boolean = false) {
         const targetPath = pattern.replace("[locale]", locale);
 
         try {
-          let diff: string | undefined;
+          let diff = "";
 
           if (!force) {
             // Get git diff for source file if not force translating
@@ -50,7 +50,7 @@ export async function translate(targetLocale?: string, force: boolean = false) {
               encoding: "utf-8",
             });
 
-            if (!diff) {
+            if (diff.length === 0) {
               return { locale, sourcePath, success: true, noChanges: true };
             }
           }
@@ -61,14 +61,9 @@ export async function translate(targetLocale?: string, force: boolean = false) {
             "utf-8",
           );
 
-          const adapter = getAdapter(format);
+          const adapter = await getAdapter(format);
           if (!adapter) {
-            return {
-              locale,
-              sourcePath,
-              success: false,
-              error: `No available adapter for format: ${format}`,
-            };
+            throw new Error(`No available adapter for format: ${format}`);
           }
 
           const prompt = await adapter.onPrompt({
@@ -91,7 +86,7 @@ export async function translate(targetLocale?: string, force: boolean = false) {
             prompt: prompt.prompt,
           });
 
-          let targetContent = "";
+          let targetContent = undefined;
           try {
             targetContent = await fs.readFile(
               path.join(process.cwd(), targetPath),
@@ -107,7 +102,7 @@ export async function translate(targetLocale?: string, force: boolean = false) {
 
           let { content: finalContent, summary } = await adapter.onUpdate({
             force,
-            prompt: prompt.prompt,
+            prompt,
             promptResult: text,
             content: targetContent,
           });

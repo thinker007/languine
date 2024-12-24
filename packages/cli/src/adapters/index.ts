@@ -7,14 +7,18 @@ import type {
 } from "../types.js";
 import { typescriptPrompt, typescriptUpdate } from "./js.js";
 import { jsonPrompt, jsonUpdate } from "./json.js";
-import { markdownPrompt, markdownUpdate } from "./md.js";
 
 interface Adapter {
   onPrompt: (options: PromptOptions) => Awaitable<PromptResult>;
   onUpdate: (options: UpdateOptions) => Awaitable<UpdateResult>;
 }
 
-export function getAdapter(format: string): Adapter | undefined {
+/**
+ * Get adapter from file extension/format
+ *
+ * This will lazy-load the adapters to reduce memory usage and improve server performance
+ */
+export async function getAdapter(format: string): Promise<Adapter | undefined> {
   if (format === "ts" || format === "js") {
     return {
       onPrompt: typescriptPrompt,
@@ -30,6 +34,8 @@ export function getAdapter(format: string): Adapter | undefined {
   }
 
   if (format === "md" || format === "mdx") {
+    const { markdownPrompt, markdownUpdate } = await import("./md.js");
+
     return {
       onPrompt: markdownPrompt,
       onUpdate: markdownUpdate,

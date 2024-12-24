@@ -46,7 +46,7 @@ export type PromptResult =
 
 export interface UpdateOptions {
   promptResult: string;
-  prompt: string;
+  prompt: Extract<PromptResult, { type: "success" }>;
 
   force: boolean;
 

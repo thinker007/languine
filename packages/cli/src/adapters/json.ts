@@ -9,6 +9,7 @@ import { extractChangedKeys } from "../utils.js";
 
 export function jsonPrompt(options: PromptOptions): PromptResult {
   const sourceObj = JSON.parse(options.content);
+
   const keysToTranslate = options.force
     ? Object.keys(sourceObj)
     : extractChangedKeys(options.diff).addedKeys;
