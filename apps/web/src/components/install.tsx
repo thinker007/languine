@@ -7,7 +7,7 @@ export function Install() {
   const [copied, setCopied] = useState(false);
 
   const copyCommand = () => {
-    navigator.clipboard.writeText("npx @languine/cli@latest");
+    navigator.clipboard.writeText("npx languine@latest");
     setCopied(true);
     setTimeout(() => setCopied(false), 1000);
   };
@@ -19,7 +19,7 @@ export function Install() {
         <p>Install Languine CLI</p>
 
         <div className="flex items-center mt-4 space-x-2">
-          <span className="text-primary">$ npx @languine/cli</span>
+          <span className="text-primary">$ npx languine@latest</span>
           <button
             type="button"
             onClick={copyCommand}

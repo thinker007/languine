@@ -1,5 +1,5 @@
 {
-  "name": "@languine/cli",
+  "name": "languine",
   "version": "0.5.2",
   "type": "module",
   "bin": "dist/index.js",
