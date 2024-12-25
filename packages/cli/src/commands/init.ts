@@ -47,6 +47,7 @@ export async function init() {
     options: [
       { value: "ts", label: "TypeScript (.ts)" },
       { value: "json", label: "JSON (.json)" },
+      { value: "md", label: "Markdown (.md)" },
     ],
   })) as string;
 
