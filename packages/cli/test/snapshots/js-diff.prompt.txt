@@ -10,8 +10,9 @@ Translation Requirements:
 - Respect existing whitespace and newline patterns
 - Preserve all object/property keys, syntax characters, and punctuation marks exactly
 - Only translate text content within quotation marks
+- Only return the translations in a JSON array of strings as the schema requires and not as enum values
 
-A list of javascript codeblocks, return the translated javascript string in a JSON array of string:
+A list of javascript strings to translate. Return the translations in a JSON array of strings:
 ```js
 "title"
 ```
