@@ -12,11 +12,9 @@ Translation Requirements:
 `;
 
 export function createBasePrompt(text: string, options: PromptOptions) {
-  return dedent`
-        You are a professional translator working with ${options.format.toUpperCase()} files.
-            
-        Task: Translate the content below from ${options.contentLocale} to ${options.targetLocale}.
-        ${options.config.instructions ?? ""}
-        ${text}
-    `;
+  return `You are a professional translator working with ${options.format.toUpperCase()} files.
+
+Task: Translate the content below from ${options.contentLocale} to ${options.targetLocale}.
+${options.config.instructions ?? ""}
+${text}`;
 }

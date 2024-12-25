@@ -3,6 +3,7 @@ import { baseRequirements, createBasePrompt } from "../prompt.js";
 import { generateObject, generateText } from "ai";
 import { z } from "zod";
 import { diffLines } from "diff";
+import dedent from "dedent";
 
 function extractDiff(pervious: string, content: string) {
   const contentLines = content.split("\n");
@@ -95,15 +96,13 @@ ${options.content}`,
 };
 
 function getPrompt(base: string, options: PromptOptions) {
-  const text = `
+  const text = dedent`
     ${baseRequirements}
     - Only translate frontmatter, and text content (including those in HTML/JSX)
     - Keep original code comments, line breaks, code, and codeblocks
     - Retain all code elements like variables, functions, and control structures
     - Respect existing whitespace and newline patterns
-    
-    ${base}
   `;
 
-  return createBasePrompt(text, options);
+  return createBasePrompt(`${text}\n${base}`, options);
 }

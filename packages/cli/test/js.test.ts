@@ -20,9 +20,9 @@ test("JSON adapter: new", async () => {
     model: new MockLanguageModelV1({
       defaultObjectGenerationMode: "json",
       async doGenerate(v) {
-        await expect(v.prompt.at(-1)?.content).toMatchFileSnapshot(
-          "snapshots/js-new.prompt.txt",
-        );
+        await expect(
+          (v.prompt.at(-1) as any).content[0].text,
+        ).toMatchFileSnapshot("snapshots/js-new.prompt.txt");
 
         return {
           rawCall: { rawPrompt: null, rawSettings: {} },

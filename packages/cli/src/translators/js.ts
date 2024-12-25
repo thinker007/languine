@@ -3,6 +3,7 @@ import { baseRequirements, createBasePrompt } from "../prompt.js";
 import type { PromptOptions, Translator } from "../types.js";
 import { diffLines } from "diff";
 import { z } from "zod";
+import dedent from "dedent";
 
 function createRegex(quote: string, multiline = false) {
   return `${quote}(?:\\\\.|[^${quote}\\\\${multiline ? "" : "\\n"}])*${quote}`;
@@ -136,13 +137,17 @@ export const javascript: Translator = {
 };
 
 function getPrompt(strings: StringMatch[], options: PromptOptions) {
-  return createBasePrompt(
-    `${baseRequirements}
+  const text = dedent`
+    ${baseRequirements}
     - Preserve all object/property keys, syntax characters, and punctuation marks exactly
     - Only translate text content within quotation marks
     
-    A list of javascript codeblocks, return the translated javascript code in a JSON array, make sure to escape special characters like line breaks:
-    ${strings.map((v) => `\`\`\`${options.format}\n${v.content}\n\`\`\``).join("\n\n")}`,
-    options,
-  );
+    A list of javascript codeblocks, return the translated javascript string in a JSON array of string:`;
+  const codeblocks = strings
+    .map((v) => {
+      return `\`\`\`${options.format}\n${v.content}\n\`\`\``;
+    })
+    .join("\n\n");
+
+  return createBasePrompt(`${text}\n${codeblocks}`, options);
 }

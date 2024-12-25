@@ -1,6 +1,7 @@
 import { generateObject } from "ai";
 import { baseRequirements, createBasePrompt } from "../prompt.js";
 import type { PromptOptions, Translator } from "../types.js";
+import dedent from "dedent";
 
 export const json: Translator = {
   async onUpdate(options) {
@@ -168,9 +169,8 @@ function getContentToTranslate(
   return out;
 }
 
-function getPrompt(content: string, options: PromptOptions) {
-  return createBasePrompt(
-    `
+function getPrompt(json: string, options: PromptOptions) {
+  const text = dedent`
     ${baseRequirements}
     - Only translate text content within quotation marks
     - Preserve all object/property keys, syntax characters, and punctuation marks exactly
@@ -178,11 +178,8 @@ function getPrompt(content: string, options: PromptOptions) {
     - Exclude any translator notes, comments or explanatory text
     - Match source file's JSON/object structure precisely
     - Handle special characters and escape sequences correctly
-
-    Source content (JSON):
-    ${content}
-
-    Return only the translated content with identical structure.`,
-    options,
-  );
+    
+    Source content (JSON), Return only the translated content with identical structure:
+    `;
+  return createBasePrompt(`${text}\n${json}`, options);
 }
