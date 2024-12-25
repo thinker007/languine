@@ -143,7 +143,11 @@ export const javascript: Translator = {
       prompt: getPrompt(strings, options),
       temperature: options.config.llm?.temperature ?? 0,
       schema: z.object({
-        items: z.array(z.string()),
+        items: z.array(
+          z
+            .string()
+            .describe("The translations of the strings in string format"),
+        ),
       }),
     });
 
@@ -158,8 +162,9 @@ function getPrompt(strings: StringMatch[], options: PromptOptions) {
     ${baseRequirements}
     - Preserve all object/property keys, syntax characters, and punctuation marks exactly
     - Only translate text content within quotation marks
+    - Only return the translations in a JSON array of strings as the schema requires and not as enum values
     
-    A list of javascript codeblocks, return the translated javascript string in a JSON array of string:`;
+    A list of javascript strings to translate. Return the translations in a JSON array of strings:`;
 
   const codeblocks = strings
     .map((v) => {

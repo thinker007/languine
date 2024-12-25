@@ -1,5 +1,5 @@
 export default {
-  version: "0.5.5",
+  version: "0.5.6",
   locale: {
     source: "en",
     targets: ["fr"],
@@ -12,5 +12,6 @@ export default {
   llm: {
     provider: "ollama",
     model: "mistral:latest",
+    temperature: 0,
   },
 };
