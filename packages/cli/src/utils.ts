@@ -28,7 +28,7 @@ export async function getApiKey(name: string, key: string) {
             `)}
           - by passing it inline:
             ${chalk.gray(`\`\`\`
-              ${key}=<your-key> npx cali
+              ${key}=<your-key> npx languine
               \`\`\`
             `)}
           - by setting it as an env variable in your shell (e.g. in ~/.zshrc or ~/.bashrc):
