@@ -43,11 +43,6 @@ export async function translate(targetLocale?: string, force = false) {
 
   const git = simpleGit();
 
-  // Initialize OpenAI
-  const openai = createOpenAI({
-    apiKey: await getApiKey("OpenAI", "OPENAI_API_KEY"),
-  });
-
   const model = getModel(config);
 
   const s = spinner();
@@ -135,7 +130,12 @@ export async function translate(targetLocale?: string, force = false) {
             summary,
           };
         } catch (error) {
-          return { locale, sourcePath, success: false, error };
+          return {
+            locale,
+            sourcePath,
+            success: false,
+            error,
+          };
         }
       }),
     ),

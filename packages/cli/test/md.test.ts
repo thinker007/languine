@@ -1,11 +1,11 @@
-import { getPromptText } from "./test-utils.js";
+import { readFile } from "node:fs/promises";
+import path from "node:path";
+import { fileURLToPath } from "node:url";
+import { MockLanguageModelV1 } from "ai/test";
 import { expect, test } from "vitest";
 import { markdown } from "../src/translators/md.js";
-import { Config } from "../src/types.js";
-import { readFile } from "node:fs/promises";
-import { fileURLToPath } from "node:url";
-import path from "node:path";
-import { MockLanguageModelV1 } from "ai/test";
+import type { Config } from "../src/types.js";
+import { getPromptText } from "./test-utils.js";
 
 const dir = path.dirname(fileURLToPath(import.meta.url));
 
@@ -24,7 +24,7 @@ test("markdown adapter: new", async () => {
         rawCall: { rawPrompt: null, rawSettings: {} },
         finishReason: "stop",
         usage: { promptTokens: 10, completionTokens: 20 },
-        text: `你好，世界，这是一个用于测试翻译的测试文档。`,
+        text: "你好，世界，这是一个用于测试翻译的测试文档。",
       }),
     }),
   });

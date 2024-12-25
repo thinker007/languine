@@ -8,7 +8,6 @@ Translation Requirements:
 - Keep all technical identifiers unchanged
 - Keep consistent capitalization, spacing, and line breaks
 - Respect existing whitespace and newline patterns
-- Never add space before a ! or ?
 `;
 
 export function createBasePrompt(text: string, options: PromptOptions) {

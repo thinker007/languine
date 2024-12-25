@@ -42,6 +42,7 @@ export const markdown: Translator = {
 
     const { object: arr } = await generateObject({
       model: options.model,
+      temperature: options.config.llm?.temperature ?? 0,
       schema: z.array(z.string()),
       prompt: getPrompt(
         `

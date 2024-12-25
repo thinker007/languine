@@ -8,7 +8,6 @@ Translation Requirements:
 - Keep all technical identifiers unchanged
 - Keep consistent capitalization, spacing, and line breaks
 - Respect existing whitespace and newline patterns
-- Never add space before a ! or ?
 - Only translate text content within quotation marks
 - Preserve all object/property keys, syntax characters, and punctuation marks exactly
 - Retain all code elements like variables, functions, and control structures

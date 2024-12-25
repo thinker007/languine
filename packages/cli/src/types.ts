@@ -16,6 +16,7 @@ export interface Config {
   llm: {
     provider: Provider;
     model: string;
+    temperature: number;
   };
   instructions?: string;
   hooks?: {

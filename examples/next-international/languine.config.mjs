@@ -1,5 +1,5 @@
 export default {
-  version: "1.0.0",
+  version: "0.5.5",
   locale: {
     source: "en",
     targets: ["fr"],
@@ -9,7 +9,8 @@ export default {
       include: ["locales/[locale].ts"],
     },
   },
-  openai: {
-    model: "gpt-4-turbo",
+  llm: {
+    provider: "ollama",
+    model: "mistral:latest",
   },
 };

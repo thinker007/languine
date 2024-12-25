@@ -2,7 +2,7 @@ import { execSync } from "node:child_process";
 import fs from "node:fs/promises";
 import path from "node:path";
 import { intro, outro, select, text } from "@clack/prompts";
-import { providers } from "../model-providers.js";
+import { providers } from "../providers.js";
 import type { Provider } from "../types.js";
 import { configPath } from "../utils.js";
 
@@ -83,17 +83,18 @@ export async function init() {
   version: "${require("../../package.json").version}",
   locale: {
     source: "${sourceLanguage}",
-    targets: ${JSON.stringify(targetLanguages.split(",").map((l) => l.trim()))}
+    targets: ${JSON.stringify(targetLanguages.split(",").map((l) => l.trim()))},
   },
   files: {
     ${fileFormat}: {
-      include: ["${filesDirectory}/[locale].${fileFormat}"]
-    }
+      include: ["${filesDirectory}/[locale].${fileFormat}"],
+    },
   },
   llm: {
     provider: "${provider}",
-    model: "${model}"
-  }
+    model: "${model}",
+    temperature: 0,
+  },
 }`;
 
   try {

@@ -1,3 +1,5 @@
+import { outro } from "@clack/prompts";
+import chalk from "chalk";
 import ollama from "ollama";
 import type { Provider } from "./types.js";
 
@@ -28,11 +30,21 @@ export const providers: Record<Provider, ProviderConfig> = {
     value: "ollama",
     label: "Ollama",
     getModels: async () => {
-      const { models } = await ollama.list();
-      return models.map((model) => ({
-        value: model.name,
-        label: model.name,
-      }));
+      try {
+        const { models } = await ollama.list();
+
+        return models.map((model) => ({
+          value: model.name,
+          label: model.name,
+        }));
+      } catch {
+        outro(
+          chalk.red(
+            "Failed to get models from Ollama, is it installed and running?",
+          ),
+        );
+        process.exit(1);
+      }
     },
   },
 };

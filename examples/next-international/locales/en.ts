@@ -1,7 +1,7 @@
 export default {
   hello: "Hello",
   welcome: "Hello {name}!",
-  "about.you": "Hello {name}! You have {age} yo",
+  "about.you": "Hello {name}! You have {age} years",
   "scope.test": "A scope",
   "scope.more.test": "A scope",
   "scope.more.param": "A scope with {param}",
@@ -11,4 +11,5 @@ export default {
   "missing.translation.in.fr": "This should work",
   "cows#one": "A cow",
   "cows#other": "{count} cows",
+  "languine.hello": "Hello Languine",
 } as const;

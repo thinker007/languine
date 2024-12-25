@@ -13,6 +13,7 @@ export const json: Translator = {
     if (changes.addedKeys.length > 0) {
       translated = await generateObject({
         model: options.model,
+        temperature: options.config.llm?.temperature ?? 0,
         prompt: getPrompt(
           JSON.stringify(
             getContentToTranslate(sourceObj, changes.addedKeys),
@@ -43,6 +44,7 @@ export const json: Translator = {
     const { object } = await generateObject({
       model: options.model,
       prompt: getPrompt(options.content, options),
+      temperature: options.config.llm?.temperature ?? 0,
       output: "no-schema",
     });
 
@@ -181,5 +183,6 @@ function getPrompt(json: string, options: PromptOptions) {
     
     Source content (JSON), Return only the translated content with identical structure:
     `;
+
   return createBasePrompt(`${text}\n${json}`, options);
 }
