@@ -25,8 +25,8 @@ export async function diff() {
       process.exit(0);
     }
 
-    let added = 0,
-      removed = 0;
+    let added = 0;
+    let removed = 0;
 
     for (const line of diff.split("\n")) {
       if (line.startsWith("+") && !line.startsWith("+++")) added++;

@@ -2,7 +2,7 @@
   "name": "@languine/example",
   "version": "1.0.0",
   "dependencies": {
-    "@languine/cli": "link:@languine/cli"
+    "languine": "link:languine"
   },
   "devDependencies": {
     "@biomejs/js-api": "^0.7.1",

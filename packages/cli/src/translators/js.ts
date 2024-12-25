@@ -1,16 +1,16 @@
 import { generateObject } from "ai";
-import { baseRequirements, createBasePrompt } from "../prompt.js";
-import type { PromptOptions, Translator } from "../types.js";
+import dedent from "dedent";
 import { diffLines } from "diff";
 import { z } from "zod";
-import dedent from "dedent";
+import { baseRequirements, createBasePrompt } from "../prompt.js";
+import type { PromptOptions, Translator } from "../types.js";
 
 function createRegex(quote: string, multiline = false) {
   return `${quote}(?:\\\\.|[^${quote}\\\\${multiline ? "" : "\\n"}])*${quote}`;
 }
 
 const quotesRegex = new RegExp(
-  `${createRegex(`"`)}|${createRegex(`'`)}|${createRegex(`\``, true)}`,
+  `${createRegex(`"`)}|${createRegex(`'`)}|${createRegex("`", true)}`,
   "g",
 );
 
@@ -74,7 +74,7 @@ export const javascript: Translator = {
     const toTranslate: StringMatch[] = [];
 
     let lineStartIdx = 0;
-    diff.forEach((change) => {
+    for (const change of diff) {
       if (change.added) {
         const affected = strings.filter(
           (v) =>
@@ -88,7 +88,7 @@ export const javascript: Translator = {
       if (!change.removed) {
         lineStartIdx += change.value.length;
       }
-    });
+    }
 
     let translated: string[] = [];
 
@@ -96,10 +96,12 @@ export const javascript: Translator = {
       const { object } = await generateObject({
         model: options.model,
         prompt: getPrompt(toTranslate, options),
-        schema: z.array(z.string()),
+        schema: z.object({
+          translations: z.array(z.string()),
+        }),
       });
 
-      translated = object;
+      translated = object.translations;
     }
 
     const output = replaceStrings(
@@ -127,11 +129,13 @@ export const javascript: Translator = {
     const { object } = await generateObject({
       model: options.model,
       prompt: getPrompt(strings, options),
-      schema: z.array(z.string()),
+      schema: z.object({
+        translations: z.array(z.string()),
+      }),
     });
 
     return {
-      content: replaceStrings(options.content, strings, object),
+      content: replaceStrings(options.content, strings, object.translations),
     };
   },
 };
@@ -141,6 +145,7 @@ function getPrompt(strings: StringMatch[], options: PromptOptions) {
     ${baseRequirements}
     - Preserve all object/property keys, syntax characters, and punctuation marks exactly
     - Only translate text content within quotation marks
+    - Don't remove the quotes around the keys and values
     
     A list of javascript codeblocks, return the translated javascript string in a JSON array of string:`;
   const codeblocks = strings

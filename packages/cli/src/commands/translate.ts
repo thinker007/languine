@@ -1,15 +1,14 @@
-import { execSync } from "node:child_process";
 import fs from "node:fs/promises";
 import path from "node:path";
 import { createOpenAI } from "@ai-sdk/openai";
 import { intro, outro, spinner } from "@clack/prompts";
 import chalk from "chalk";
-import { getApiKey, getConfig } from "../utils.js";
+import { simpleGit } from "simple-git";
 import { getTranslator } from "../translators/index.js";
 import type { PromptOptions, UpdateResult } from "../types.js";
-import { simpleGit } from "simple-git";
+import { getApiKey, getConfig } from "../utils.js";
 
-export async function translate(targetLocale?: string, force: boolean = false) {
+export async function translate(targetLocale?: string, force = false) {
   intro("Starting translation process...");
 
   const config = await getConfig();
@@ -33,6 +32,7 @@ export async function translate(targetLocale?: string, force: boolean = false) {
   const openai = createOpenAI({
     apiKey: await getApiKey("OpenAI", "OPENAI_API_KEY"),
   });
+
   const model = openai(config.openai.model);
 
   const s = spinner();
