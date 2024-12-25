@@ -11,15 +11,16 @@ import { markdown } from "./md.js";
 export async function getTranslator(
   format: string,
 ): Promise<Translator | undefined> {
-  if (format === "ts" || format === "js") {
-    return javascript;
-  }
-
-  if (format === "json") {
-    return json;
-  }
-
-  if (format === "md" || format === "mdx") {
-    return markdown;
+  switch (format) {
+    case "ts":
+    case "js":
+      return javascript;
+    case "json":
+      return json;
+    case "md":
+    case "mdx":
+      return markdown;
+    default:
+      return undefined;
   }
 }

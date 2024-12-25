@@ -1,9 +1,9 @@
-import type { PromptOptions, Translator } from "../types.js";
-import { baseRequirements, createBasePrompt } from "../prompt.js";
 import { generateObject, generateText } from "ai";
-import { z } from "zod";
-import { diffLines } from "diff";
 import dedent from "dedent";
+import { diffLines } from "diff";
+import { z } from "zod";
+import { baseRequirements, createBasePrompt } from "../prompt.js";
+import type { PromptOptions, Translator } from "../types.js";
 
 function extractDiff(pervious: string, content: string) {
   const contentLines = content.split("\n");

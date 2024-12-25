@@ -1,7 +1,7 @@
 import { generateObject } from "ai";
+import dedent from "dedent";
 import { baseRequirements, createBasePrompt } from "../prompt.js";
 import type { PromptOptions, Translator } from "../types.js";
-import dedent from "dedent";
 
 export const json: Translator = {
   async onUpdate(options) {
