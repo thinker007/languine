@@ -6,5 +6,5 @@ export default {
         content: `Updated
 Updated`
     },
-    dynamic: `Updated ${Date.now()}`
+    dynamic: `Translated ${Date.now()}`
 }

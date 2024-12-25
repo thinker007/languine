@@ -1,8 +1,6 @@
 #!/usr/bin/env node
 
-import dotenv from "dotenv";
-dotenv.config();
-
+import "./envs.js";
 import { select } from "@clack/prompts";
 import chalk from "chalk";
 import dedent from "dedent";

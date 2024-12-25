@@ -2,6 +2,8 @@ import { execSync } from "node:child_process";
 import fs from "node:fs/promises";
 import path from "node:path";
 import { intro, outro, select, text } from "@clack/prompts";
+import { providers } from "../providers.js";
+import type { Provider } from "../types.js";
 import { configPath } from "../utils.js";
 
 export async function init() {
@@ -51,32 +53,48 @@ export async function init() {
     ],
   })) as string;
 
+  const provider = (await select<Provider>({
+    message: "Which provider would you like to use?",
+    options: Object.values(providers),
+    initialValue: "openai",
+  })) as Provider;
+
+  if (provider === "ollama") {
+    try {
+      const ollamaBinary = execSync("which ollama").toString().trim();
+      if (!ollamaBinary) {
+        outro("Ollama binary not found. Please install Ollama");
+        process.exit(1);
+      }
+    } catch (error) {
+      outro("Ollama binary not found. Please install Ollama");
+      process.exit(1);
+    }
+  }
+
+  const models = await providers[provider].getModels();
+
   const model = (await select({
-    message: "Which OpenAI model should be used for translations?",
-    options: [
-      { value: "gpt-4-turbo", label: "GPT-4 Turbo (Default)" },
-      { value: "gpt-4", label: "GPT-4" },
-      { value: "gpt-4o", label: "GPT-4o" },
-      { value: "gpt-4o-mini", label: "GPT-4o mini" },
-      { value: "gpt-3.5-turbo", label: "GPT-3.5 Turbo" },
-    ],
-    initialValue: "gpt-4-turbo",
+    message: "Which model should be used for translations?",
+    options: models,
   })) as string;
 
   const configContent = `export default {
   version: "${require("../../package.json").version}",
   locale: {
     source: "${sourceLanguage}",
-    targets: ${JSON.stringify(targetLanguages.split(",").map((l) => l.trim()))}
+    targets: ${JSON.stringify(targetLanguages.split(",").map((l) => l.trim()))},
   },
   files: {
     ${fileFormat}: {
-      include: ["${filesDirectory}/[locale].${fileFormat}"]
-    }
+      include: ["${filesDirectory}/[locale].${fileFormat}"],
+    },
   },
-  openai: {
-    model: "${model}"
-  }
+  llm: {
+    provider: "${provider}",
+    model: "${model}",
+    temperature: 0,
+  },
 }`;
 
   try {

@@ -32,10 +32,13 @@ function getStrings(code: string) {
   const strings: StringMatch[] = [];
 
   while (match) {
-    strings.push({
-      index: match.index,
-      content: match[0],
-    });
+    // Skip if the string is a key (contains dots or #)
+    if (!match[0].includes(".") && !match[0].includes("#")) {
+      strings.push({
+        index: match.index,
+        content: match[0],
+      });
+    }
 
     match = quotesRegex.exec(code);
   }
@@ -52,11 +55,19 @@ function replaceStrings(
 
   replaces.forEach((replace, i) => {
     const original = strings[i];
+    if (!original) return; // Skip if no matching original string
+
     const offset = out.length - code.length;
+    const quote = original.content[0]; // Get the quote character used
+
+    // Keep original quotes but ensure replacement content is complete
+    const wrappedReplace = replace.startsWith(quote)
+      ? replace
+      : `${quote}${replace}${quote}`;
 
     out =
       out.slice(0, original.index + offset) +
-      replace +
+      wrappedReplace +
       out.slice(original.index + original.content.length + offset);
   });
 
@@ -96,12 +107,13 @@ export const javascript: Translator = {
       const { object } = await generateObject({
         model: options.model,
         prompt: getPrompt(toTranslate, options),
+        temperature: options.config.llm?.temperature ?? 0,
         schema: z.object({
-          translations: z.array(z.string()),
+          items: z.array(z.string()),
         }),
       });
 
-      translated = object.translations;
+      translated = object.items;
     }
 
     const output = replaceStrings(
@@ -129,13 +141,14 @@ export const javascript: Translator = {
     const { object } = await generateObject({
       model: options.model,
       prompt: getPrompt(strings, options),
+      temperature: options.config.llm?.temperature ?? 0,
       schema: z.object({
-        translations: z.array(z.string()),
+        items: z.array(z.string()),
       }),
     });
 
     return {
-      content: replaceStrings(options.content, strings, object.translations),
+      content: replaceStrings(options.content, strings, object.items),
     };
   },
 };
@@ -145,9 +158,9 @@ function getPrompt(strings: StringMatch[], options: PromptOptions) {
     ${baseRequirements}
     - Preserve all object/property keys, syntax characters, and punctuation marks exactly
     - Only translate text content within quotation marks
-    - Don't remove the quotes around the keys and values
     
     A list of javascript codeblocks, return the translated javascript string in a JSON array of string:`;
+
   const codeblocks = strings
     .map((v) => {
       return `\`\`\`${options.format}\n${v.content}\n\`\`\``;

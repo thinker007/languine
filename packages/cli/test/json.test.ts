@@ -1,10 +1,10 @@
-import { expect, test } from "vitest";
-import { Config } from "../src/types.js";
 import { readFile } from "node:fs/promises";
-import { fileURLToPath } from "node:url";
 import path from "node:path";
+import { fileURLToPath } from "node:url";
 import { MockLanguageModelV1 } from "ai/test";
+import { expect, test } from "vitest";
 import { json } from "../src/translators/json.js";
+import type { Config } from "../src/types.js";
 import { getPromptText } from "./test-utils.js";
 
 const dir = path.dirname(fileURLToPath(import.meta.url));

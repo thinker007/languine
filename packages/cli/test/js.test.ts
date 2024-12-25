@@ -1,10 +1,10 @@
-import { expect, test } from "vitest";
-import { Config } from "../src/types.js";
 import { readFile } from "node:fs/promises";
-import { fileURLToPath } from "node:url";
 import path from "node:path";
+import { fileURLToPath } from "node:url";
 import { MockLanguageModelV1 } from "ai/test";
+import { expect, test } from "vitest";
 import { javascript } from "../src/translators/js.js";
+import type { Config } from "../src/types.js";
 import { getPromptText } from "./test-utils.js";
 
 const dir = path.dirname(fileURLToPath(import.meta.url));
@@ -29,13 +29,15 @@ test("JavaScript adapter: new", async () => {
           rawCall: { rawPrompt: null, rawSettings: {} },
           finishReason: "stop",
           usage: { promptTokens: 10, completionTokens: 20 },
-          text: JSON.stringify([
-            '"标题"',
-            '"介绍"',
-            "'在开始之前，请确保您具备以下条件：\\n一个 GitHub 账户'",
-            "`您可以在自己的云基础设施上自托管 Midday，以便更好地控制您的数据。\\n    本指南将引导您完成设置 Midday 的整个过程。`",
-            "`当前时间是 ${Date.now()}`",
-          ]),
+          text: JSON.stringify({
+            items: [
+              "标题",
+              "介绍",
+              "在开始之前，请确保您具备以下条件：\n一个 GitHub 账户",
+              "您可以在自己的云基础设施上自托管 Midday，以便更好地控制您的数据。\n    本指南将引导您完成设置 Midday 的整个过程。",
+              `当前时间是 ${Date.now()}`,
+            ],
+          }),
         };
       },
     }),
@@ -70,12 +72,14 @@ test("JavaScript adapter: diff", async () => {
           rawCall: { rawPrompt: null, rawSettings: {} },
           finishReason: "stop",
           usage: { promptTokens: 10, completionTokens: 20 },
-          text: JSON.stringify([
-            '"title"',
-            '"Updated"',
-            "`Updated\nUpdated`",
-            "`Updated ${Date.now()}`",
-          ]),
+          text: JSON.stringify({
+            items: [
+              "title",
+              "Updated",
+              "Updated\nUpdated",
+              `Updated ${Date.now()}`,
+            ],
+          }),
         };
       },
     }),
