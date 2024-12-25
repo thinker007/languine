@@ -21,6 +21,7 @@
     }
   },
   "formatter": {
-    "indentStyle": "space"
+    "indentStyle": "space",
+    "ignore": ["test/resources", "test/snapshots"]
   }
 }

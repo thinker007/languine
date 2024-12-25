@@ -43,7 +43,11 @@ export interface UpdateOptions extends PromptOptions {
    * Content to update (translated content)
    */
   previousTranslation: string;
-  diff: string;
+
+  /**
+   * source content before updated
+   */
+  previousContent: string;
 }
 
 export interface UpdateResult {

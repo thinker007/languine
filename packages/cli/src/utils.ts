@@ -80,57 +80,6 @@ export async function getConfig() {
   return config;
 }
 
-export function extractChangedKeys(diff: string) {
-  const addedKeys = new Set<string>();
-  const removedKeys = new Set<string>();
-
-  for (const line of diff.split("\n")) {
-    if (line.startsWith("+") && !line.startsWith("+++")) {
-      // Handle both quoted and unquoted keys
-      let match = line.slice(1).match(/["']([\w_.#]+)["']/);
-
-      if (match) {
-        addedKeys.add(match[1]);
-        continue;
-      }
-
-      match = line.slice(1).match(/^[+]\s*(\w+):\s*"[^"]*"/);
-
-      if (match) {
-        addedKeys.add(match[1]);
-        continue;
-      }
-    } else if (line.startsWith("-") && !line.startsWith("---")) {
-      // Handle both quoted and unquoted keys
-      const quotedMatch = line.match(/["']([\w_.#]+)["']/);
-      const unquotedMatch = line.match(/^[-]\s*(\w+):\s*"[^"]*"/);
-
-      if (quotedMatch) {
-        removedKeys.add(quotedMatch[1]);
-      } else if (unquotedMatch) {
-        removedKeys.add(unquotedMatch[1]);
-      }
-    }
-  }
-
-  return {
-    addedKeys: Array.from(addedKeys),
-    removedKeys: Array.from(removedKeys),
-  };
-}
-
-export function getChangedContent(diff: string) {
-  return diff
-    .split("\n")
-    .flatMap((v) => {
-      if (v.startsWith("-") && !v.startsWith("---")) return [];
-      if (v.startsWith("+") && !v.startsWith("+++")) return v.slice(1);
-
-      return v;
-    })
-    .join("\n");
-}
-
 export function updateConfig(config: Config) {
   fs.writeFileSync(configPath, `export default ${JSON.stringify(config)}`);
 }

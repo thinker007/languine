@@ -1,11 +1,4 @@
-import type {
-  Awaitable,
-  PromptOptions,
-  PromptResult,
-  Translator,
-  UpdateOptions,
-  UpdateResult,
-} from "../types.js";
+import type { Translator } from "../types.js";
 import { javascript } from "./js.js";
 import { json } from "./json.js";
 import { markdown } from "./md.js";
@@ -22,7 +15,7 @@ export async function getTranslator(
     return javascript;
   }
 
-  if (format === "json" || format === "json5") {
+  if (format === "json") {
     return json;
   }
 

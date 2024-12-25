@@ -1,62 +1,148 @@
 import { generateObject } from "ai";
-import { createRecordPrompt } from "../prompt.js";
-import { extractChangedKeys } from "../utils.js";
-import type { Translator } from "../types.js";
+import { baseRequirements, createBasePrompt } from "../prompt.js";
+import type { PromptOptions, Translator } from "../types.js";
+import { diffLines } from "diff";
+import { z } from "zod";
 
-function parse(content: string) {
-  return Function(
-    `return ${content.replace(/export default |as const;/g, "")}`,
-  )();
+function createRegex(quote: string, multiline = false) {
+  return `${quote}(?:\\\\.|[^${quote}\\\\${multiline ? "" : "\\n"}])*${quote}`;
+}
+
+const quotesRegex = new RegExp(
+  `${createRegex(`"`)}|${createRegex(`'`)}|${createRegex(`\``, true)}`,
+  "g",
+);
+
+interface StringMatch {
+  index: number;
+
+  /**
+   * content, including quotes
+   */
+  content: string;
+}
+
+/**
+ * Get declared strings from code (e.g. "hello world" or `hello ${world}`)
+ */
+function getStrings(code: string) {
+  let match = quotesRegex.exec(code);
+
+  const strings: StringMatch[] = [];
+
+  while (match) {
+    strings.push({
+      index: match.index,
+      content: match[0],
+    });
+
+    match = quotesRegex.exec(code);
+  }
+
+  return strings;
+}
+
+function replaceStrings(
+  code: string,
+  strings: StringMatch[],
+  replaces: string[],
+) {
+  let out = code;
+
+  replaces.forEach((replace, i) => {
+    const original = strings[i];
+    const offset = out.length - code.length;
+
+    out =
+      out.slice(0, original.index + offset) +
+      replace +
+      out.slice(original.index + original.content.length + offset);
+  });
+
+  return out;
 }
 
 export const javascript: Translator = {
+  // detect changes
+  // translate changes
+  // apply translated changes to previous translation (assuming line breaks are identical)
   async onUpdate(options) {
-    const sourceObj = parse(options.content);
+    const diff = diffLines(options.previousContent, options.content);
+    const strings = getStrings(options.content);
+    const previousTranslation = getStrings(options.previousTranslation);
+    const toTranslate: StringMatch[] = [];
 
-    const changes = extractChangedKeys(options.diff);
-    // Parse the translated content
-    let translatedObj: object = {};
+    let lineStartIdx = 0;
+    diff.forEach((change) => {
+      if (change.added) {
+        const affected = strings.filter(
+          (v) =>
+            v.index >= lineStartIdx &&
+            v.index < lineStartIdx + change.value.length,
+        );
 
-    if (changes.addedKeys.length > 0) {
-      // If force is true, translate everything. Otherwise only new keys
-      const contentToTranslate: Record<string, string> = {};
-      for (const key of changes.addedKeys) {
-        contentToTranslate[key] = sourceObj[key];
+        toTranslate.push(...affected);
       }
 
+      if (!change.removed) {
+        lineStartIdx += change.value.length;
+      }
+    });
+
+    let translated: string[] = [];
+
+    if (toTranslate.length > 0) {
       const { object } = await generateObject({
         model: options.model,
-        prompt: createRecordPrompt(contentToTranslate, options),
-        output: "no-schema",
+        prompt: getPrompt(toTranslate, options),
+        schema: z.array(z.string()),
       });
 
-      translatedObj = object as object;
+      translated = object;
     }
 
-    const output = parse(options.previousTranslation);
+    const output = replaceStrings(
+      options.previousTranslation,
+      previousTranslation,
+      strings.map((s, i) => {
+        const j = toTranslate.indexOf(s);
 
-    for (const key of changes.removedKeys) {
-      delete output[key];
-    }
+        if (j !== -1) {
+          return translated[j];
+        }
 
-    Object.assign(output, translatedObj);
+        return previousTranslation[i].content;
+      }),
+    );
 
     return {
-      summary: `Translated ${Object.keys(translatedObj).length} new keys`,
-      content: `export default ${JSON.stringify(output, null, 2)} as const;\n`,
+      summary: `Translated ${toTranslate.length} new keys`,
+      content: output,
     };
   },
   async onNew(options) {
-    const sourceObj = parse(options.content);
+    const strings = getStrings(options.content);
 
     const { object } = await generateObject({
       model: options.model,
-      prompt: createRecordPrompt(sourceObj, options),
-      output: "no-schema",
+      prompt: getPrompt(strings, options),
+      schema: z.array(z.string()),
     });
 
     return {
-      content: `export default ${JSON.stringify(object, null, 2)} as const;\n`,
+      content: replaceStrings(options.content, strings, object),
     };
   },
 };
+
+function getPrompt(strings: StringMatch[], options: PromptOptions) {
+  return createBasePrompt(
+    `${baseRequirements}
+    - Preserve all object/property keys, syntax characters, and punctuation marks exactly
+    - Only translate text content within quotation marks
+    
+    A list of javascript codeblocks, return the translated javascript code in a JSON array, make sure to escape special characters like line breaks:
+    ${strings.map((v) => `\`\`\`${options.format}\n${v.content}\n\`\`\``).join("\n\n")}`,
+    options,
+  );
+}

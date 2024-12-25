@@ -1,7 +1,7 @@
 import { execSync } from "node:child_process";
 import { intro, outro } from "@clack/prompts";
 import chalk from "chalk";
-import { extractChangedKeys, getConfig } from "../utils.js";
+import { getConfig } from "../utils.js";
 
 export async function diff() {
   intro("Checking for changes in source locale file...");
@@ -25,16 +25,22 @@ export async function diff() {
       process.exit(0);
     }
 
-    const { addedKeys, removedKeys } = extractChangedKeys(diff);
+    let added = 0,
+      removed = 0;
 
-    if (addedKeys.length === 0 && removedKeys.length === 0) {
+    for (const line of diff.split("\n")) {
+      if (line.startsWith("+") && !line.startsWith("+++")) added++;
+      else if (line.startsWith("-") && !line.startsWith("---")) removed++;
+    }
+
+    if (added === 0 && removed === 0) {
       outro(
         chalk.yellow("No translation keys were added, modified or removed."),
       );
       process.exit(0);
     }
 
-    const totalChanges = addedKeys.length + removedKeys.length;
+    const totalChanges = added + removed;
     outro(
       chalk.blue(
         `Found ${totalChanges} translation key${totalChanges === 1 ? "" : "s"} changed`,
@@ -42,8 +48,8 @@ export async function diff() {
     );
 
     return {
-      addedKeys,
-      removedKeys,
+      addedKeys: [],
+      removedKeys: [],
     };
   } catch (error) {
     outro(chalk.red("Failed to check for changes"));

@@ -7,6 +7,7 @@ import chalk from "chalk";
 import { getApiKey, getConfig } from "../utils.js";
 import { getTranslator } from "../translators/index.js";
 import type { PromptOptions, UpdateResult } from "../types.js";
+import { simpleGit } from "simple-git";
 
 export async function translate(targetLocale?: string, force: boolean = false) {
   intro("Starting translation process...");
@@ -26,6 +27,8 @@ export async function translate(targetLocale?: string, force: boolean = false) {
     process.exit(1);
   }
 
+  const git = simpleGit();
+
   // Initialize OpenAI
   const openai = createOpenAI({
     apiKey: await getApiKey("OpenAI", "OPENAI_API_KEY"),
@@ -43,24 +46,20 @@ export async function translate(targetLocale?: string, force: boolean = false) {
         const targetPath = pattern.replace("[locale]", locale);
 
         try {
-          let diff = "";
-
-          if (!force) {
-            // Get git diff for source file if not force translating
-            diff = execSync(`git diff HEAD -- ${sourcePath}`, {
-              encoding: "utf-8",
-            });
-
-            if (diff.length === 0) {
-              return { locale, sourcePath, success: true, noChanges: true };
-            }
-          }
-
           // Read source and target files
           const sourceContent = await fs.readFile(
             path.join(process.cwd(), sourcePath),
             "utf-8",
           );
+
+          let previousContent = "";
+
+          if (!force) {
+            previousContent = await git.show(sourcePath).catch(() => "");
+
+            if (previousContent === sourceContent)
+              return { locale, sourcePath, success: true, noChanges: true };
+          }
 
           let previousTranslation = undefined;
           try {
@@ -90,15 +89,14 @@ export async function translate(targetLocale?: string, force: boolean = false) {
             content: sourceContent,
           };
 
-          let { content: finalContent, summary } = (
-            previousTranslation && !force
+          let { content: finalContent, summary } =
+            previousTranslation && previousContent && !force
               ? await adapter.onUpdate({
                   ...options,
                   previousTranslation,
-                  diff,
+                  previousContent,
                 })
-              : await adapter.onNew(options)
-          ) as UpdateResult;
+              : ((await adapter.onNew(options)) as UpdateResult);
 
           // Run afterTranslate hook if defined
           if (config.hooks?.afterTranslate) {
