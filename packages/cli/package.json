@@ -1,10 +1,11 @@
 {
   "name": "languine",
-  "version": "0.5.7",
+  "version": "0.6.0",
   "type": "module",
   "bin": "dist/index.js",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
+  "license": "MIT",
   "scripts": {
     "clean": "rm -rf .turbo node_modules",
     "lint": "biome check .",
@@ -14,6 +15,7 @@
     "dev": "tsup src/index.ts --format esm --watch --clean",
     "start": "node dist/index.js"
   },
+  "files": ["dist", "README.md"],
   "dependencies": {
     "@ai-sdk/openai": "^1.0.11",
     "@clack/prompts": "^0.9.0",
