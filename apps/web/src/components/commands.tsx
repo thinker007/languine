@@ -186,7 +186,7 @@ export function Commands() {
           step >= 5 ? "opacity-100" : "opacity-0",
         )}
       >
-        ◇ Which provider would you like to use??
+        ◇ Which provider would you like to use?
       </span>
       <span
         className={cn(
