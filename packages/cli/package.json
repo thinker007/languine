@@ -10,7 +10,6 @@
     "lint": "biome check .",
     "format": "biome format --write .",
     "typecheck": "tsc --noEmit",
-    "test": "bun test src",
     "build": "tsup src/index.ts --format esm --dts --clean",
     "dev": "tsup src/index.ts --format esm --watch --clean",
     "start": "node dist/index.js"
@@ -21,10 +20,13 @@
     "ai": "^4.0.22",
     "chalk": "^5.4.1",
     "dedent": "^1.5.3",
+    "diff": "^7.0.0",
     "dotenv": "^16.4.7",
+    "simple-git": "^3.27.0",
     "zod": "^3.24.1"
   },
   "devDependencies": {
+    "@types/diff": "^6.0.0",
     "tsup": "^8.3.5",
     "typescript": "^5.7.2"
   }

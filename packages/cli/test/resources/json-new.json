@@ -1,0 +1,8 @@
+{
+  "search": "Search",
+  "description": "Hello World",
+  "nested": {
+    "description": "something is happening",
+    "words": ["Next.js", "hope"]
+  }
+}

@@ -3,13 +3,13 @@ import fs from "node:fs/promises";
 import path from "node:path";
 import { createOpenAI } from "@ai-sdk/openai";
 import { intro, outro, spinner } from "@clack/prompts";
-import { generateText } from "ai";
 import chalk from "chalk";
-import dedent from "dedent";
-import { prompt as defaultPrompt } from "../prompt.js";
-import { extractChangedKeys, getApiKey, getConfig } from "../utils.js";
+import { getApiKey, getConfig } from "../utils.js";
+import { getTranslator } from "../translators/index.js";
+import type { PromptOptions, UpdateResult } from "../types.js";
+import { simpleGit } from "simple-git";
 
-export async function translate(targetLocale?: string, force?: boolean) {
+export async function translate(targetLocale?: string, force: boolean = false) {
   intro("Starting translation process...");
 
   const config = await getConfig();
@@ -27,10 +27,13 @@ export async function translate(targetLocale?: string, force?: boolean) {
     process.exit(1);
   }
 
+  const git = simpleGit();
+
   // Initialize OpenAI
   const openai = createOpenAI({
     apiKey: await getApiKey("OpenAI", "OPENAI_API_KEY"),
   });
+  const model = openai(config.openai.model);
 
   const s = spinner();
   s.start("Checking for changes and translating to target locales...");
@@ -43,35 +46,24 @@ export async function translate(targetLocale?: string, force?: boolean) {
         const targetPath = pattern.replace("[locale]", locale);
 
         try {
-          let addedKeys: string[] = [];
-
-          if (!force) {
-            // Get git diff for source file if not force translating
-            const diff = execSync(`git diff HEAD -- ${sourcePath}`, {
-              encoding: "utf-8",
-            });
-
-            if (!diff) {
-              return { locale, sourcePath, success: true, noChanges: true };
-            }
-
-            const changes = extractChangedKeys(diff);
-            addedKeys = changes.addedKeys;
-
-            if (addedKeys.length === 0) {
-              return { locale, sourcePath, success: true, noChanges: true };
-            }
-          }
-
           // Read source and target files
           const sourceContent = await fs.readFile(
             path.join(process.cwd(), sourcePath),
             "utf-8",
           );
 
-          let targetContent = "";
+          let previousContent = "";
+
+          if (!force) {
+            previousContent = await git.show(sourcePath).catch(() => "");
+
+            if (previousContent === sourceContent)
+              return { locale, sourcePath, success: true, noChanges: true };
+          }
+
+          let previousTranslation = undefined;
           try {
-            targetContent = await fs.readFile(
+            previousTranslation = await fs.readFile(
               path.join(process.cwd(), targetPath),
               "utf-8",
             );
@@ -83,68 +75,28 @@ export async function translate(targetLocale?: string, force?: boolean) {
             await fs.mkdir(targetDir, { recursive: true });
           }
 
-          // Parse source content
-          const sourceObj =
-            format === "ts"
-              ? Function(
-                  `return ${sourceContent.replace(/export default |as const;/g, "")}`,
-                )()
-              : JSON.parse(sourceContent);
-
-          // If force is true, translate everything. Otherwise only new keys
-          const keysToTranslate = force ? Object.keys(sourceObj) : addedKeys;
-          const contentToTranslate: Record<string, string> = {};
-          for (const key of keysToTranslate) {
-            contentToTranslate[key] = sourceObj[key];
+          const adapter = await getTranslator(format);
+          if (!adapter) {
+            throw new Error(`No available translator for format: ${format}`);
           }
 
-          const prompt = dedent`
-            You are a professional translator working with ${format.toUpperCase()} files.
-            
-            Task: Translate the content below from ${source} to ${locale}.
-            ${force ? "" : "Only translate the new keys provided."}
+          const options: PromptOptions = {
+            config,
+            contentLocale: source,
+            format,
+            model,
+            targetLocale: locale,
+            content: sourceContent,
+          };
 
-            ${defaultPrompt}
-
-            ${config.instructions ?? ""}
-
-            Source content ${force ? "" : "(new keys only)"}:
-            ${JSON.stringify(contentToTranslate, null, 2)}
-
-            Return only the translated content with identical structure.
-          `;
-
-          // Get translation from OpenAI
-          const { text } = await generateText({
-            model: openai(config.openai.model),
-            prompt,
-          });
-
-          // Parse the translated content
-          const translatedObj =
-            format === "ts"
-              ? Function(`return ${text.replace(/as const;?/g, "")}`)()
-              : JSON.parse(text);
-
-          // Merge with existing translations if not force translating
-          const finalObj = force
-            ? translatedObj
-            : {
-                ...(targetContent
-                  ? format === "ts"
-                    ? Function(
-                        `return ${targetContent.replace(/export default |as const;/g, "")}`,
-                      )()
-                    : JSON.parse(targetContent)
-                  : {}),
-                ...translatedObj,
-              };
-
-          // Format the final content
-          let finalContent =
-            format === "ts"
-              ? `export default ${JSON.stringify(finalObj, null, 2)} as const;\n`
-              : JSON.stringify(finalObj, null, 2);
+          let { content: finalContent, summary } =
+            previousTranslation && previousContent && !force
+              ? await adapter.onUpdate({
+                  ...options,
+                  previousTranslation,
+                  previousContent,
+                })
+              : ((await adapter.onNew(options)) as UpdateResult);
 
           // Run afterTranslate hook if defined
           if (config.hooks?.afterTranslate) {
@@ -165,7 +117,7 @@ export async function translate(targetLocale?: string, force?: boolean) {
             locale,
             sourcePath,
             success: true,
-            addedKeys: keysToTranslate,
+            summary,
           };
         } catch (error) {
           return { locale, sourcePath, success: false, error };
@@ -187,7 +139,7 @@ export async function translate(targetLocale?: string, force?: boolean) {
     for (const result of changes) {
       console.log(
         chalk.green(
-          `✓ Translated ${result.addedKeys?.length} ${force ? "total" : "new"} keys for ${result.locale}`,
+          `✓ Translated ${result.summary ?? "content"} for ${result.locale}`,
         ),
       );
     }

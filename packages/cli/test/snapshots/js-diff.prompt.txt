@@ -1,0 +1,31 @@
+You are a professional translator working with JS files.
+
+Task: Translate the content below from en to cn.
+
+Translation Requirements:
+- Maintain exact file structure, indentation, and formatting
+- Provide natural, culturally-adapted translations that sound native
+- Keep all technical identifiers unchanged
+- Keep consistent capitalization, spacing, and line breaks
+- Respect existing whitespace and newline patterns
+- Never add space before a ! or ?
+- Preserve all object/property keys, syntax characters, and punctuation marks exactly
+- Only translate text content within quotation marks
+
+A list of javascript codeblocks, return the translated javascript string in a JSON array of string:
+```js
+"title"
+```
+
+```js
+"Getting Stopped"
+```
+
+```js
+`Explore ideas and examples of
+what you can build with the Midday API`
+```
+
+```js
+`the current time is not ${Date.now()}`
+```
