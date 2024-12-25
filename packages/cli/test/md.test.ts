@@ -1,3 +1,4 @@
+import { getPromptText } from "./test-utils.js";
 import { expect, test } from "vitest";
 import { markdown } from "../src/translators/md.js";
 import { Config } from "../src/types.js";
@@ -47,7 +48,7 @@ test("markdown adapter: diff", async () => {
     model: new MockLanguageModelV1({
       defaultObjectGenerationMode: "json",
       async doGenerate(v) {
-        await expect(v.prompt.at(-1)).toMatchFileSnapshot(
+        await expect(getPromptText(v.prompt)).toMatchFileSnapshot(
           "snapshots/md-diff.prompt.txt",
         );
 

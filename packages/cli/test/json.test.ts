@@ -5,6 +5,7 @@ import { fileURLToPath } from "node:url";
 import path from "node:path";
 import { MockLanguageModelV1 } from "ai/test";
 import { json } from "../src/translators/json.js";
+import { getPromptText } from "./test-utils.js";
 
 const dir = path.dirname(fileURLToPath(import.meta.url));
 
@@ -58,7 +59,7 @@ test("JSON adapter: diff", async () => {
     model: new MockLanguageModelV1({
       defaultObjectGenerationMode: "json",
       async doGenerate(v) {
-        await expect(v.prompt.at(-1)).toMatchFileSnapshot(
+        await expect(getPromptText(v.prompt)).toMatchFileSnapshot(
           "snapshots/json-diff.prompt.txt",
         );
 

@@ -1,7 +1,4 @@
-{
-  "content": [
-    {
-      "text": "You are a professional translator working with JSON files.
+You are a professional translator working with JSON files.
 
 Task: Translate the content below from en to cn.
 
@@ -25,10 +22,4 @@ Source content (JSON), Return only the translated content with identical structu
   "nested": {
     "description": "nothing is happening"
   }
-}",
-      "type": "text",
-    },
-  ],
-  "providerMetadata": undefined,
-  "role": "user",
 }

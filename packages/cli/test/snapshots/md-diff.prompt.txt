@@ -1,7 +1,4 @@
-{
-  "content": [
-    {
-      "text": "You are a professional translator working with MD files.
+You are a professional translator working with MD files.
 
 Task: Translate the content below from en to cn.
 
@@ -30,10 +27,3 @@ export default function Layout() {
 ```
 
 <div>Hello World</div>
-",
-      "type": "text",
-    },
-  ],
-  "providerMetadata": undefined,
-  "role": "user",
-}
