@@ -77,7 +77,7 @@ export async function translate(targetLocale?: string, force: boolean = false) {
 
           const adapter = await getTranslator(format);
           if (!adapter) {
-            throw new Error(`No available adapter for format: ${format}`);
+            throw new Error(`No available translator for format: ${format}`);
           }
 
           const options: PromptOptions = {
