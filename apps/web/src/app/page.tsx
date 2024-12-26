@@ -64,7 +64,8 @@ export default function Page() {
             <p>
               The smart detection system identifies new, modified, or removed
               translation keys in your codebase, handling multiple file formats
-              (.json, .ts, .md) with precise parsing and file-specific updates.
+              (.json, .ts, .md, .yaml, .po, .xml, .plist, .xcstrings,
+              .stringsdict) with precise parsing and file-specific updates.
             </p>
             <p>
               Built with TypeScript and designed for developers, Languine
