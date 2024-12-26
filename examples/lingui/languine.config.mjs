@@ -15,7 +15,8 @@ export default {
       include: ["locales/[locale].json"],
     },
   },
-  openai: {
+  llm: {
+    provider: "openai",
     model: "gpt-4-turbo",
   },
   hooks: {

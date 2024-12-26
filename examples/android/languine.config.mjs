@@ -1,12 +1,12 @@
 export default {
-  version: "1.0.0",
+  version: "0.6.2",
   locale: {
     source: "en",
-    targets: ["sv"],
+    targets: ["es"],
   },
   files: {
-    json: {
-      include: ["locales/[locale].json"],
+    android: {
+      include: ["locales/[locale].xml"],
     },
   },
   llm: {

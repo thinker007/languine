@@ -69,7 +69,11 @@ export async function translate(targetLocale?: string, force = false) {
           let previousContent = "";
 
           if (!force) {
-            previousContent = await git.show(sourcePath).catch(() => "");
+            previousContent = await git
+              .show([`HEAD:${sourcePath}`])
+              .catch(() => "");
+
+            console.log(previousContent);
 
             if (previousContent === sourceContent)
               return { locale, sourcePath, success: true, noChanges: true };

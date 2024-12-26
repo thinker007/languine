@@ -38,7 +38,7 @@ developer-friendly experience.
 
 - Automatically identifies new, modified, or removed translation keys in your
   codebase using Git diff
-- Handles multiple file formats (.json, .ts, .md) with precise parsing and
+- Handles multiple file formats (.json, .ts, .md, .yaml, .po, .strings, .stringsdict, .xcstrings) with precise parsing and
   file-specific updates
 
 ### 🌍 AI-Powered Translation

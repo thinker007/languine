@@ -9,7 +9,8 @@ export default {
       include: ["messages/[locale].json"],
     },
   },
-  openai: {
+  llm: {
+    provider: "openai",
     model: "gpt-4-turbo",
   },
 };

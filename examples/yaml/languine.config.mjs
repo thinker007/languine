@@ -1,16 +1,16 @@
 export default {
-  version: "1.0.0",
+  version: "0.6.2",
   locale: {
     source: "en",
-    targets: ["sv"],
+    targets: ["es"],
   },
   files: {
-    json: {
-      include: ["locales/[locale].json"],
+    yaml: {
+      include: ["locales/[locale].yml"],
     },
   },
   llm: {
     provider: "openai",
     model: "gpt-4-turbo",
   },
-};
+}
