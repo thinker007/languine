@@ -6,7 +6,7 @@ import chalk from "chalk";
 import { installDependencies } from "../install.js";
 import { providers } from "../providers.js";
 import type { PresetOptions, Provider } from "../types.js";
-import { configPath } from "../utils.js";
+import { configFile, generateConfig } from "../utils.js";
 
 async function createDirectoryOrFile(filePath: string, isDirectory = false) {
   try {
@@ -67,6 +67,8 @@ function getDefaultPattern(format: string) {
 }
 
 export async function init(preset?: string) {
+  let configType = "ts";
+
   try {
     execSync("git rev-parse --is-inside-work-tree", { stdio: "ignore" });
   } catch (error) {
@@ -77,6 +79,21 @@ export async function init(preset?: string) {
   }
 
   intro("Let's set up your i18n configuration");
+
+  if (!preset) {
+    configType = (await select({
+      message: "What type of config file would you like to use?",
+      options: [
+        { value: "ts", label: "TypeScript", hint: "recommended" },
+        { value: "mjs", label: "JavaScript" },
+      ],
+    })) as "ts" | "mjs";
+
+    // Install dependencies only if we're using TypeScript for types in config
+    if (configType === "ts") {
+      await installDependencies();
+    }
+  }
 
   const sourceLanguage = (await select({
     message: "What is your source language?",
@@ -142,6 +159,8 @@ export async function init(preset?: string) {
     filesPatterns = Array.isArray(presetConfig.filesPattern)
       ? presetConfig.filesPattern
       : [presetConfig.filesPattern];
+
+    configType = presetConfig.configType;
   }
 
   const provider = (await select<Provider>({
@@ -169,27 +188,16 @@ export async function init(preset?: string) {
     message: "Which model should be used for translations?",
     options: models,
   })) as string;
-  const configContent = `import { defineConfig } from "languine";
-
-export default defineConfig({
-  version: "${require("../../package.json").version}",
-  locale: {
-    source: "${sourceLanguage}",
-    targets: ${JSON.stringify(targetLanguages.split(",").map((l) => l.trim()))},
-  },
-  files: {
-    ${fileFormat.includes("-") ? `"${fileFormat}"` : fileFormat}: {
-      include: ${JSON.stringify(filesPatterns)},
-    },
-  },
-  llm: {
-    provider: "${provider}",
-    model: "${model}",
-  },
-})`;
-
-  // Install dependencies
-  await installDependencies();
+  const configContent = generateConfig({
+    version: require("../../package.json").version,
+    sourceLanguage,
+    targetLanguages: targetLanguages.split(",").map((l) => l.trim()),
+    fileFormat,
+    filesPatterns,
+    provider,
+    model,
+    configType,
+  });
 
   try {
     const targetLangs = [
@@ -217,7 +225,8 @@ export default defineConfig({
     }
 
     // Write config file
-    await fs.writeFile(configPath, configContent);
+    const { path: configPath } = await configFile(configType);
+    await fs.writeFile(configPath, configContent, "utf-8");
     outro(
       "Configuration file and language files/directories created successfully!",
     );
