@@ -100,15 +100,15 @@ export function generateConfig({
     provider: "${provider}",
     model: "${model}",
   },
-};`;
+}`;
 
   if (configType === "mjs") {
-    return `export default ${configBody}`;
+    return `export default ${configBody};`;
   }
 
   return `import { defineConfig } from "languine";
 
-export default defineConfig(${configBody})`;
+export default defineConfig(${configBody});`;
 }
 
 export async function configFile(configType?: string) {
