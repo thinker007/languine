@@ -1,7 +1,7 @@
 import { defineConfig } from "languine";
 
 export default defineConfig({
-  version: "7.0.0",
+  version: "0.7.0",
   locale: {
     source: "en",
     targets: ["es", "sv", "pt"],
