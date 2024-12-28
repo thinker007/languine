@@ -3,7 +3,7 @@
 </p>
 
 <p align="center">
-  A lightweight i18n library for React email templates.
+  A lightweight i18n library for React Email.
 </p>
 
 ---
@@ -14,7 +14,7 @@ $ npm install @languine/react-email
 
 ## What is this?
 
-This is a lightweight i18n library for React email templates. It is built on top of `i18n-js`.
+This is a lightweight i18n library for React Email. It is built on top of `i18n-js`.
 
 Automatically included language files are in the `locales` folder.
 
