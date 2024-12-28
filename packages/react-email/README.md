@@ -14,9 +14,9 @@ $ npm install @languine/react-email
 
 ## What is this?
 
-This is a lightweight i18n library for React Email. It is built on top of `i18n-js`.
+This is a lightweight i18n library for React Email built on top of `i18n-js`.
 
-Automatically included language files are in the `locales` folder.
+Language files are automatically included in the `locales` folder.
 
 ## How to use
 
