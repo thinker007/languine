@@ -38,6 +38,15 @@ export function WelcomeEmail({ locale, name }) {
 }
 ```
 
+### Translation files (en.json)
+
+```json
+{
+    "preview": "Welcome to our app!",
+    "welcome": "Hello, %{name}!"
+}
+```
+
 ### Rendering the email
 ```tsx
 import { render } from '@react-email/render';
