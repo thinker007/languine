@@ -56,7 +56,6 @@ developer-friendly experience.
 
 - Supports hooks to format the content with Biome or Prettier
 
-
 ## Made with 🤍 from Midday
 
 Languine was made from the implementation in [Midday](https://midday.ai), we
