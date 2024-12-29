@@ -26,19 +26,9 @@ jobs:
       #   run: bun run lint
       - name: 🧪 Run unit tests
         run: bun run test
-      - name: 🔍 Filter changes
-        id: filter
-        uses: dorny/paths-filter@v2
-        with:
-          filters: |
-            react-email:
-              - 'packages/react-email/src/**'
-            cli:
-              - 'packages/cli/src/**'
 
   publish-cli:
     name: 🚀 Publish CLI
-    if: needs.test.outputs.cli == 'true'
     needs: [test]
     runs-on: ubuntu-latest
     permissions:
@@ -69,7 +59,6 @@ jobs:
           
   publish-react-email:
     name: 🚀 Publish React Email
-    if: needs.test.outputs.react-email == 'true'
     needs: [test]
     runs-on: ubuntu-latest
     permissions:
