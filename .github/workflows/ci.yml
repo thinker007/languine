@@ -30,11 +30,9 @@ jobs:
         with:
           filters: |
             react-email:
-              - 'packages/react-email/**'
-              - '!packages/react-email/package.json'
+              - 'packages/react-email/src/**'
             cli:
-              - 'packages/cli/**'
-              - '!packages/cli/package.json'
+              - 'packages/cli/src/**'
 
   publish-cli:
     name: Publish CLI
