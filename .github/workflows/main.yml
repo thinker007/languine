@@ -29,13 +29,13 @@ jobs:
       - name: Check package changes
         id: check-changes
         run: |
-          npx changeset status --since=HEAD > status.txt
+          npx changeset status > status.txt
           if grep -q 'packages/react-email' status.txt; then
             echo "react-email-changed=true" >> $GITHUB_ENV
           else
             echo "react-email-changed=false" >> $GITHUB_ENV
           fi
-          if grep -q 'packages/cli' status.txt; then
+          if grep -q 'languine' status.txt; then
             echo "cli-changed=true" >> $GITHUB_ENV
           else
             echo "cli-changed=false" >> $GITHUB_ENV
