@@ -23,8 +23,8 @@ jobs:
       - name: 🧪 Run unit tests
         run: bun run test
     
-  publish-cli:
-    name: 🚀 Publish CLI
+  create-release:
+    name: 📦 Create Release  
     needs: [test]
     runs-on: ubuntu-latest
     permissions:
