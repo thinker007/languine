@@ -3,6 +3,7 @@ import fs from "node:fs/promises";
 import path from "node:path";
 import { intro, outro, select, text } from "@clack/prompts";
 import chalk from "chalk";
+import which from "which";
 import { installDependencies } from "../install.js";
 import { providers } from "../providers.js";
 import type { PresetOptions, Provider } from "../types.js";
@@ -171,11 +172,7 @@ export async function init(preset?: string) {
 
   if (provider === "ollama") {
     try {
-      const ollamaBinary = execSync("which ollama").toString().trim();
-      if (!ollamaBinary) {
-        outro("Ollama binary not found. Please install Ollama");
-        process.exit(1);
-      }
+      await which("ollama");
     } catch (error) {
       outro("Ollama binary not found. Please install Ollama");
       process.exit(1);
