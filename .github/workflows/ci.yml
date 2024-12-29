@@ -31,8 +31,10 @@ jobs:
           filters: |
             react-email:
               - 'packages/react-email/**'
+              - '!packages/react-email/package.json'
             cli:
               - 'packages/cli/**'
+              - '!packages/cli/package.json'
 
   publish-cli:
     name: Publish CLI
@@ -62,6 +64,13 @@ jobs:
       - name: Update version
         working-directory: packages/cli
         run: npm version ${{ steps.get_version.outputs.new_version }} --no-git-tag-version
+      - name: Commit package.json changes
+        run: |
+          git config --local user.email "github-actions[bot]@users.noreply.github.com"
+          git config --local user.name "github-actions[bot]"
+          git add packages/cli/package.json
+          git commit -m "chore: bump languine to v${{ steps.get_version.outputs.new_version }}"
+          git push
       - name: Create Release
         uses: softprops/action-gh-release@v1
         with:
@@ -75,7 +84,7 @@ jobs:
         run: npm publish --access public
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
-
+          
   publish-react-email:
     name: Publish React Email
     if: needs.test.outputs.react-email == 'true'
@@ -104,6 +113,13 @@ jobs:
       - name: Update version
         working-directory: packages/react-email
         run: npm version ${{ steps.get_version.outputs.new_version }} --no-git-tag-version
+      - name: Commit package.json changes
+        run: |
+          git config --local user.email "github-actions[bot]@users.noreply.github.com"
+          git config --local user.name "github-actions[bot]"
+          git add packages/react-email/package.json
+          git commit -m "chore: bump @languine/react-email to v${{ steps.get_version.outputs.new_version }}"
+          git push
       - name: Create Release
         uses: softprops/action-gh-release@v1
         with:
