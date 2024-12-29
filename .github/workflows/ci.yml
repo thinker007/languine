@@ -21,9 +21,29 @@ jobs:
       - name: 🧪 Run unit tests
         run: bun run test
 
+  check-changes:
+    runs-on: ubuntu-latest
+    outputs:
+      react-email: ${{ steps.filter.outputs.react-email }}
+      cli: ${{ steps.filter.outputs.cli }}
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Filter changes
+        id: filter
+        uses: dorny/paths-filter@v2
+        with:
+          filters: |
+            react-email:
+              - 'packages/react-email/**'
+            cli:
+              - 'packages/cli/**'
+
   publish-cli:
     name: Publish CLI
-    if: contains(github.event.head_commit.modified, 'packages/cli/')
+    if: needs.check-changes.outputs.cli == 'true'
     needs: [test]
     runs-on: ubuntu-latest
     permissions:
@@ -65,7 +85,7 @@ jobs:
 
   publish-react-email:
     name: Publish React Email
-    if: ${{ always() && contains(join(github.event.head_commit.modified, ','), 'packages/react-email') }}
+     if: needs.check-changes.outputs.react-email == 'true'
     needs: [test]
     runs-on: ubuntu-latest
     permissions:
