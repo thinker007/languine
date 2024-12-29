@@ -46,6 +46,8 @@ jobs:
       packages: write
     steps:
       - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
       - uses: oven-sh/setup-bun@v1
         with:
           bun-version: latest
@@ -68,6 +70,7 @@ jobs:
         run: |
           git config --local user.email "github-actions[bot]@users.noreply.github.com"
           git config --local user.name "github-actions[bot]"
+          git pull origin main
           git add packages/cli/package.json
           git commit -m "chore: bump languine to v${{ steps.get_version.outputs.new_version }}"
           git push
@@ -95,6 +98,8 @@ jobs:
       packages: write
     steps:
       - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
       - uses: oven-sh/setup-bun@v1
         with:
           bun-version: latest
@@ -117,6 +122,7 @@ jobs:
         run: |
           git config --local user.email "github-actions[bot]@users.noreply.github.com"
           git config --local user.name "github-actions[bot]"
+          git pull origin main
           git add packages/react-email/package.json
           git commit -m "chore: bump @languine/react-email to v${{ steps.get_version.outputs.new_version }}"
           git push
