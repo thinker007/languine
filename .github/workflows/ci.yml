@@ -65,7 +65,7 @@ jobs:
 
   publish-react-email:
     name: Publish React Email
-    if: contains(github.event.head_commit.modified, 'packages/react-email/') || contains(github.event.head_commit.added, 'packages/react-email/') || contains(github.event.head_commit.removed, 'packages/react-email/')
+    if: ${{ always() && contains(join(github.event.head_commit.modified, ','), 'packages/react-email') }}
     needs: [test]
     runs-on: ubuntu-latest
     permissions:
