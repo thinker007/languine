@@ -44,7 +44,7 @@ jobs:
   publish-cli:
     name: Publish CLI
     if: needs.check-changes.outputs.cli == 'true'
-    needs: [test]
+    needs: [test, check-changes]
     runs-on: ubuntu-latest
     permissions:
       contents: write
@@ -86,7 +86,7 @@ jobs:
   publish-react-email:
     name: Publish React Email
     if: needs.check-changes.outputs.react-email == 'true'
-    needs: [test]
+    needs: [test, check-changes]
     runs-on: ubuntu-latest
     permissions:
       contents: write
