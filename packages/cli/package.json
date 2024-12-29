@@ -1,6 +1,6 @@
 {
   "name": "languine",
-  "version": "0.7.1",
+  "version": "0.7.2",
   "type": "module",
   "bin": "dist/index.js",
   "main": "dist/config.js",
@@ -16,7 +16,10 @@
     "start": "node dist/index.js",
     "test": "vitest"
   },
-  "files": ["dist", "README.md"],
+  "files": [
+    "dist",
+    "README.md"
+  ],
   "dependencies": {
     "@ai-sdk/openai": "^1.0.11",
     "@babel/parser": "^7.26.3",
