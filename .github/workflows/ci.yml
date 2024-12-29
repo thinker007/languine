@@ -85,7 +85,7 @@ jobs:
 
   publish-react-email:
     name: Publish React Email
-     if: needs.check-changes.outputs.react-email == 'true'
+    if: needs.check-changes.outputs.react-email == 'true'
     needs: [test]
     runs-on: ubuntu-latest
     permissions:
