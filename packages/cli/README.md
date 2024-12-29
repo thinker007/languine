@@ -47,6 +47,11 @@ developer-friendly experience.
 - Supports more than 100 languages with natural and consistent results
 - Ensures that translations align with the tone and intent of your original text
 
+### 🔑 Extract Translations
+
+- Extract translations keys from your codebase and save them to your source
+  language file
+
 ### 🪝 Hooks
 
 - Supports hooks to format the content with Biome or Prettier
