@@ -2,6 +2,7 @@ import { Hono } from "@/lib/app";
 import { setupAuth } from "@/lib/auth";
 import { apiReference } from "@scalar/hono-api-reference";
 import { openAPISpecs } from "hono-openapi";
+import { contextStorage } from "hono/context-storage";
 import { cors } from "hono/cors";
 import { sessionMiddleware } from "./middleware";
 import router from "./routes";
@@ -19,6 +20,8 @@ app.use(
     credentials: true,
   }),
 );
+
+app.use(contextStorage());
 
 app.use("*", sessionMiddleware);
 
