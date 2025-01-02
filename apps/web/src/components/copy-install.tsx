@@ -1,5 +1,6 @@
 "use client";
 
+import { AnimatePresence, motion } from "motion/react";
 import Link from "next/link";
 import { useState } from "react";
 
@@ -68,11 +69,12 @@ export function CopyInstall() {
 
   const copyCommand = () => {
     navigator.clipboard.writeText("npx languine@latest");
+    setCopied(true);
     setTimeout(() => setCopied(false), 1000);
   };
 
   return (
-    <div className="flex mt-4 border border-dashed border-muted-foreground p-2 px-4 text-sm w-full">
+    <div className="flex mt-4 border border-dashed border-muted-foreground p-2 px-4 text-sm w-full relative">
       <button
         type="button"
         onClick={copyCommand}
@@ -90,6 +92,19 @@ export function CopyInstall() {
           <GitHubIcon />
         </Link>
       </div>
+
+      <AnimatePresence>
+        {copied && (
+          <motion.div
+            initial={{ opacity: 0, y: 0 }}
+            animate={{ opacity: 1, y: -30 }}
+            exit={{ opacity: 0, y: -40 }}
+            className="absolute left-1/2 -translate-x-1/2 top-0 text-xs text-primary"
+          >
+            Copied to clipboard
+          </motion.div>
+        )}
+      </AnimatePresence>
     </div>
   );
 }
