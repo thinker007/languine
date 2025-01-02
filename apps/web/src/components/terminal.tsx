@@ -340,7 +340,15 @@ export function Terminal() {
               step >= 5 ? "opacity-100" : "opacity-0",
             )}
           >
-            │ ● OpenAI
+            │ ● Languine
+          </span>
+          <span
+            className={cn(
+              "transition-opacity duration-100",
+              step >= 5 ? "opacity-100" : "opacity-0",
+            )}
+          >
+            │ ○ OpenAI
           </span>
           <span
             className={cn(
