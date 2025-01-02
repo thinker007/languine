@@ -11,7 +11,7 @@ export function Hero() {
 
   return (
     <div className="py-12 md:py-28 flex flex-row gap-12 justify-between items-center">
-      <div className="md:max-w-lg space-y-8">
+      <div className="lg:max-w-lg space-y-8 w-full">
         <h1 className="text-3xl">{t("hero.title")}</h1>
         <p className="text-secondary text-sm">{t("hero.description")}</p>
         <CopyInstall />
@@ -23,10 +23,10 @@ export function Hero() {
 
           <Link
             href="https://git.new/languine"
-            className="text-sm text-secondary underline"
+            className="hidden md:block text-sm text-secondary underline"
           >
             <OutlinedButton variant="secondary">
-              {t("getStarted.button")}
+              {t("getStarted.button.readDocumentation")}
             </OutlinedButton>
           </Link>
         </div>
