@@ -36,7 +36,7 @@ export function Header() {
           <Link
             href={link.href}
             className={cn(
-              "text-secondary hover:text-primary transition-colors",
+              "text-secondary hover:text-primary transition-colors hidden md:block",
               link.className,
             )}
             key={link.href}

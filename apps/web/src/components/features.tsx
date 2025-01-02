@@ -1,41 +1,41 @@
 "use client";
 
 import { Card, CardHeader } from "@/components/ui/card";
-import { useI18n } from "@/locales/client";
+import { useScopedI18n } from "@/locales/client";
 
 export function Features() {
-  const t = useI18n();
+  const t = useScopedI18n("features");
 
   const features = [
     {
-      title: t("features.fullyOpenSource"),
-      description: t("features.fullyOpenSourceDescription"),
+      title: t("fullyOpenSource"),
+      description: t("fullyOpenSourceDescription"),
     },
     {
-      title: t("features.noVendorLockIn"),
-      description: t("features.noVendorLockInDescription"),
+      title: t("noVendorLockIn"),
+      description: t("noVendorLockInDescription"),
     },
     {
-      title: t("features.presetsForExpo"),
-      description: t("features.presetsForExpoDescription"),
+      title: t("presetsForExpo"),
+      description: t("presetsForExpoDescription"),
     },
     {
-      title: t("features.presetForReactNative"),
-      description: t("features.presetForReactNativeDescription"),
+      title: t("presetForReactNative"),
+      description: t("presetForReactNativeDescription"),
     },
     {
-      title: t("features.presetForReactEmail"),
-      description: t("features.presetForReactEmailDescription"),
+      title: t("presetForReactEmail"),
+      description: t("presetForReactEmailDescription"),
     },
     {
-      title: t("features.readyForI18nLibraries"),
-      description: t("features.readyForI18nLibrariesDescription"),
+      title: t("readyForI18nLibraries"),
+      description: t("readyForI18nLibrariesDescription"),
     },
   ];
 
   return (
     <div>
-      <h3>{t("features.title")}</h3>
+      <h3>{t("title")}</h3>
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 mt-4">
         {features.map((feature) => (

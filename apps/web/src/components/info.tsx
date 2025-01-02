@@ -9,70 +9,78 @@ export function Info() {
     <>
       <div className="flex flex-col space-y-12">
         <div>
-          <h2 className="text-2xl font-bold mb-4">Smart Translation Engine</h2>
+          <h2 className="text-2xl font-bold mb-4">
+            {t("info.smartTranslation.title")}
+          </h2>
           <ul className="text-secondary mt-4">
             <li>
-              <span className="text-2xl">◇</span> Intelligent translation across
-              all major languages
+              <span className="text-2xl">◇</span>{" "}
+              {t("info.smartTranslation.intelligentTranslation")}
             </li>
             <li>
-              <span className="text-2xl">◇</span> Brand voice preservation
-              across languages
+              <span className="text-2xl">◇</span>{" "}
+              {t("info.smartTranslation.brandVoice")}
             </li>
             <li>
-              <span className="text-2xl">◇</span> Industry-specific terminology
-              handling
+              <span className="text-2xl">◇</span>{" "}
+              {t("info.smartTranslation.terminology")}
             </li>
             <li>
-              <span className="text-2xl">◇</span> Advanced linguistic features
-              support
+              <span className="text-2xl">◇</span>{" "}
+              {t("info.smartTranslation.linguisticFeatures")}
             </li>
             <li>
-              <span className="text-2xl">◇</span> Real-time translation updates
+              <span className="text-2xl">◇</span>{" "}
+              {t("info.smartTranslation.realtimeUpdates")}
             </li>
           </ul>
         </div>
 
         <div>
-          <h2 className="text-2xl font-bold mb-4">Easy Implementation</h2>
+          <h2 className="text-2xl font-bold mb-4">
+            {t("info.implementation.title")}
+          </h2>
           <ul className="text-secondary mt-4">
             <li>
-              <span className="text-2xl">◇</span> Quick setup with your tech
-              stack
+              <span className="text-2xl">◇</span>{" "}
+              {t("info.implementation.quickSetup")}
             </li>
             <li>
-              <span className="text-2xl">◇</span> Flexible file format
-              compatibility
+              <span className="text-2xl">◇</span>{" "}
+              {t("info.implementation.fileFormat")}
             </li>
             <li>
-              <span className="text-2xl">◇</span> Smart content structure
-              preservation
+              <span className="text-2xl">◇</span>{" "}
+              {t("info.implementation.contentStructure")}
             </li>
             <li>
-              <span className="text-2xl">◇</span> Efficient translation asset
-              organization
+              <span className="text-2xl">◇</span>{" "}
+              {t("info.implementation.assetOrganization")}
             </li>
           </ul>
         </div>
 
         <div>
-          <h2 className="text-2xl font-bold mb-4">Built for Developers</h2>
+          <h2 className="text-2xl font-bold mb-4">
+            {t("info.developer.title")}
+          </h2>
           <ul className="text-secondary mt-4">
             <li>
-              <span className="text-2xl">◇</span> Intuitive CLI
+              <span className="text-2xl">◇</span> {t("info.developer.cli")}
             </li>
             <li>
-              <span className="text-2xl">◇</span> Automated CI/CD integration
+              <span className="text-2xl">◇</span> {t("info.developer.cicd")}
             </li>
             <li>
-              <span className="text-2xl">◇</span> Version control with Git
+              <span className="text-2xl">◇</span>{" "}
+              {t("info.developer.versionControl")}
             </li>
             <li>
-              <span className="text-2xl">◇</span> Streamlined localization
-              workflow
+              <span className="text-2xl">◇</span> {t("info.developer.workflow")}
             </li>
             <li>
-              <span className="text-2xl">◇</span> Documentation and support
+              <span className="text-2xl">◇</span>{" "}
+              {t("info.developer.documentation")}
             </li>
           </ul>
         </div>

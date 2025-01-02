@@ -3,9 +3,11 @@ import { betterAuth } from "better-auth";
 import { drizzleAdapter } from "better-auth/adapters/drizzle";
 import { bearer, emailOTP, organization } from "better-auth/plugins";
 import type { Context } from "hono";
-import { resend } from "./resend";
+import { Resend } from "resend";
 
 export const setupAuth = (c: Context) => {
+  const resend = new Resend(c.env.RESEND_API_KEY);
+
   return betterAuth({
     database: drizzleAdapter(db(c.env.DB), {
       provider: "sqlite",
@@ -27,14 +29,12 @@ export const setupAuth = (c: Context) => {
       organization(),
       emailOTP({
         async sendVerificationOTP({ email, otp, type }) {
-          console.log(email, otp, type);
-          // Implement the sendVerificationOTP method to send the OTP to the user's email address
-          // await resend.emails.send({
-          //   from: "onboarding@resend.dev",
-          //   to: email,
-          //   subject: "Hello World",
-          //   html: "<p>Congrats on sending your <strong>first email</strong>!</p>",
-          // });
+          await resend.emails.send({
+            from: "hello@languine.ai",
+            to: email,
+            subject: "Languine - Email Verification",
+            html: `<p>Your One Time Password is ${otp}</p>`,
+          });
         },
       }),
     ],

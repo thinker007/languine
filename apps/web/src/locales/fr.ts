@@ -1,37 +1,60 @@
 export default {
-  "header.pricing": "Tarification",
+  "header.pricing": "Tarifs",
   "header.docs": "Documentation",
   "header.signIn": "Se connecter",
   "hero.title": "Localisation automatisée pour vos applications",
   "hero.description":
-    "Streamline your localization process with an AI-powered CLI and pipeline designed to automate translations for developers.",
+    "Simplifiez votre processus de localisation avec une CLI et un pipeline alimentés par l'IA, conçus pour automatiser les traductions pour les développeurs.",
   "getStarted.heading": "Commencer",
   "getStarted.title": "Localisation automatisée pour vos applications",
   "getStarted.description":
-    "Streamline your localization process with an AI-powered CLI and pipeline designed to automate translations for developers.",
+    "Simplifiez votre processus de localisation avec une CLI et un pipeline alimentés par l'IA, conçus pour automatiser les traductions pour les développeurs.",
   "getStarted.button": "Commencer l'automatisation",
   "companies.title": "Utilisé par",
-  "companies.addYourCompany": "+ Ajoutez votre entreprise",
+  "companies.addYourCompany": "+ Ajouter votre entreprise",
   "features.title": "Fonctionnalités",
   "features.fullyOpenSource": "Entièrement open source",
   "features.fullyOpenSourceDescription":
-    "Our code is publicly available on GitHub, enabling transparency and community contributions.",
+    "Notre code est disponible publiquement sur GitHub, permettant la transparence et les contributions de la communauté.",
   "features.noVendorLockIn": "Pas de dépendance à un fournisseur",
   "features.noVendorLockInDescription":
-    "We don't lock you into a specific service, use your own LLMs.",
+    "Nous ne vous limitons pas à un service spécifique, utilisez vos propres LLMs.",
   "features.presetsForExpo": "Préréglages pour Expo",
   "features.presetsForExpoDescription":
-    "We provide presets for Expo, so you can get started quickly.",
+    "Nous fournissons des préréglages pour Expo, pour que vous puissiez démarrer rapidement.",
   "features.presetForReactNative": "Préréglage pour React Native",
   "features.presetForReactNativeDescription":
-    "We provide a preset for React Native, so you can get started quickly.",
-  "features.presetForReactEmail": "Bibliothèque de courriels React",
+    "Nous fournissons un préréglage pour React Native, pour que vous puissiez démarrer rapidement.",
+  "features.presetForReactEmail": "Bibliothèque React Email",
   "features.presetForReactEmailDescription":
-    "We have created a i18n library for React Email.",
+    "Nous avons créé une bibliothèque i18n pour React Email.",
   "features.readyForI18nLibraries": "Prêt pour les bibliothèques i18n",
   "features.readyForI18nLibrariesDescription":
-    "We support all libraries including the most popular ones (next-intl, react-i18next, react-intl, etc).",
-  "info.title": "Gère tous les aspects de la localisation de votre application, y compris",
+    "Nous prenons en charge toutes les bibliothèques, y compris les plus populaires (next-intl, react-i18next, react-intl, etc).",
+  "info.title":
+    "Gère tous les aspects de la localisation de votre application, notamment",
   "getStarted.button.startAutomating": "Commencer l'automatisation",
   "getStarted.button.readDocumentation": "Lire la documentation",
+  "info.smartTranslation.title": "Traduction intelligente",
+  "info.smartTranslation.intelligentTranslation":
+    "Traduction intelligente avec prise en compte du contexte",
+  "info.smartTranslation.brandVoice":
+    "Cohérence de la voix et du ton de la marque",
+  "info.smartTranslation.terminology": "Gestion de la terminologie",
+  "info.smartTranslation.linguisticFeatures":
+    "Fonctionnalités linguistiques avancées",
+  "info.smartTranslation.realtimeUpdates":
+    "Mises à jour de traduction en temps réel",
+  "info.implementation.title": "Implémentation",
+  "info.implementation.quickSetup": "Configuration et intégration rapides",
+  "info.implementation.fileFormat": "Gestion des formats de fichier",
+  "info.implementation.contentStructure":
+    "Organisation de la structure du contenu",
+  "info.implementation.assetOrganization": "Organisation des actifs",
+  "info.developer.title": "Expérience des développeurs",
+  "info.developer.cli": "Interface en ligne de commande",
+  "info.developer.cicd": "Intégration CI/CD",
+  "info.developer.versionControl": "Contrôle de version",
+  "info.developer.workflow": "Flux de travail des développeurs",
+  "info.developer.documentation": "Documentation complète",
 } as const;
