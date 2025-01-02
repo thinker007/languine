@@ -80,7 +80,7 @@ export function CopyInstall() {
         onClick={copyCommand}
         className="flex items-center space-x-2 overflow-hidden"
       >
-        <span className="text-secondary select-none truncate">git: (main)</span>
+        <span className="text-secondary hidden md:block select-none truncate">git: (main)</span>
         <span className="text-primary truncate">$ npx languine@latest</span>
       </button>
 
