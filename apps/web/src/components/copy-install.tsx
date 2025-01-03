@@ -80,7 +80,9 @@ export function CopyInstall() {
         onClick={copyCommand}
         className="flex items-center space-x-2 overflow-hidden"
       >
-        <span className="text-secondary hidden md:block select-none truncate">git: (main)</span>
+        <span className="text-secondary hidden md:block select-none truncate">
+          git: (main)
+        </span>
         <span className="text-primary truncate">$ npx languine@latest</span>
       </button>
 
@@ -88,7 +90,7 @@ export function CopyInstall() {
         <Link href="https://npmjs.com/package/languine">
           <NPMIcon />
         </Link>
-        <Link href="https://git.new/midday-ai/languine">
+        <Link href="https://git.new/languine">
           <GitHubIcon />
         </Link>
       </div>

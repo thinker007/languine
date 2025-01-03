@@ -1,6 +1,6 @@
 "use client";
 
-import { authClient } from "@/lib/auth";
+import { auth } from "@/lib/auth";
 import { useState } from "react";
 import { CopyInstall } from "./copy-install";
 import { Button } from "./ui/button";
@@ -11,7 +11,7 @@ import { InputOTPSlot } from "./ui/input-otp";
 
 export default function Login() {
   const handleLogin = async () => {
-    await authClient.emailOtp.sendVerificationOtp({
+    await auth.emailOtp.sendVerificationOtp({
       email,
       type: "sign-in",
     });
@@ -21,16 +21,16 @@ export default function Login() {
   const [showOTP, setShowOTP] = useState(false);
   const [otp, setOtp] = useState("");
 
-  return (
-    <div className="text-center">
-      Reach out to{" "}
-      <a href="https://x.com/languine_ai" className="underline">
-        @languine_ai
-      </a>{" "}
-      to request early access to the platform.
-      <CopyInstall />
-    </div>
-  );
+  // return (
+  //   <div className="text-center">
+  //     Reach out to{" "}
+  //     <a href="https://x.com/languine_ai" className="underline">
+  //       @languine_ai
+  //     </a>{" "}
+  //     to request early access to the platform.
+  //     <CopyInstall />
+  //   </div>
+  // );
 
   return (
     <div className="flex flex-col gap-4 w-full">

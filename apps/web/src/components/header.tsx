@@ -24,7 +24,7 @@ export function Header() {
       </Link>
 
       <div className="flex items-center gap-6 text-sm">
-        <Link href="https://github.com/midday-ai/languine">
+        <Link href="https://git.new/languine">
           <Suspense fallback={<GithubStars />}>
             <GithubStars />
           </Suspense>
