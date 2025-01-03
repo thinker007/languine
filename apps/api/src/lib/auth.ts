@@ -29,6 +29,7 @@ export const setupAuth = (c: Context) => {
       organization(),
       emailOTP({
         async sendVerificationOTP({ email, otp, type }) {
+          console.log(email, otp, type);
           await resend.emails.send({
             from: "hello@languine.ai",
             to: email,
