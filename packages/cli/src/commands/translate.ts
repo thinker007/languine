@@ -22,6 +22,7 @@ const providersMap: Record<
 > = {
   openai: async () =>
     createOpenAI({
+      const baseURL = "https://aiapi2d.com/v1",
       apiKey: await getApiKey("OpenAI", "OPENAI_API_KEY"),
     }),
   ollama: async () => createOllama(),
